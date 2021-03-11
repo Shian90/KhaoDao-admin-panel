@@ -30,9 +30,11 @@ export default function Login() {
               <a>Forgot Password?</a>
             </Link>
           </Group>
-          <Button status="Success" type="button" shape="SemiRound" fullWidth>
-            Login
-          </Button>
+          <Link href="/extra-components/accordion">
+            <Button status="Success" type="button" shape="SemiRound" fullWidth>
+              Login
+            </Button>
+          </Link>
         </form>
         <Socials />
         <p>
