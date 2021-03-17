@@ -1,7 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-  baseURL: `https://staging.deliverbae.com`,
+  baseURL: process.env.NEXT_PUBLIC_API_DOMAIN,
 });
-
-//This will not show in git.This will show changes
