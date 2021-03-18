@@ -64,75 +64,79 @@ export default function Login() {
     }
   };
 
-  return (
-    <Layout title="Login">
-      <Auth title="Login" subTitle="Hello! Login with your email">
-        <Formik
-          initialValues={{ email: '', password: '' }}
-          onSubmit={async (values) => {
-            handleLoginRequest(values.email, values.password);
-            //console.log(values);
-          }}
-        >
-          {(props) => {
-            const {
-              values,
-              //touched,
-              //errors,
-              //dirty,
-              isSubmitting,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              //handleReset
-            } = props;
-            return (
-              <form onSubmit={handleSubmit}>
-                <InputGroup fullWidth>
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder="Email Address"
-                    value={values.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                </InputGroup>
-                <InputGroup fullWidth>
-                  <input
-                    id="password"
-                    type="password"
-                    placeholder="Password"
-                    value={values.password}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                </InputGroup>
-                <Group>
-                  <Checkbox checked onChange={onCheckbox}>
-                    Remember me
-                  </Checkbox>
-                  <Link href="/auth/request-password">
-                    <a>Forgot Password?</a>
-                  </Link>
-                </Group>
+  if (checkToken() == false)
+    return (
+      <Layout title="Login">
+        <Auth title="Login" subTitle="Hello! Login with your email">
+          <Formik
+            initialValues={{ email: '', password: '' }}
+            onSubmit={async (values) => {
+              handleLoginRequest(values.email, values.password);
+              //console.log(values);
+            }}
+          >
+            {(props) => {
+              const {
+                values,
+                //touched,
+                //errors,
+                //dirty,
+                isSubmitting,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                //handleReset
+              } = props;
+              return (
+                <form onSubmit={handleSubmit}>
+                  <InputGroup fullWidth>
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder="Email Address"
+                      value={values.email}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                  </InputGroup>
+                  <InputGroup fullWidth>
+                    <input
+                      id="password"
+                      type="password"
+                      placeholder="Password"
+                      value={values.password}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                  </InputGroup>
+                  <Group>
+                    <Checkbox checked onChange={onCheckbox}>
+                      Remember me
+                    </Checkbox>
+                    <Link href="/auth/request-password">
+                      <a>Forgot Password?</a>
+                    </Link>
+                  </Group>
 
-                <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={isSubmitting}>
-                  Login
-                </Button>
-              </form>
-            );
-          }}
-        </Formik>
-        <div style={{ color: 'red' }}>{errorMessage}</div>
-        <Socials />
-        <p>
-          Don&apos;t have account?{' '}
-          <Link href="/auth/register">
-            <a>Register</a>
-          </Link>
-        </p>
-      </Auth>
-    </Layout>
-  );
+                  <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={isSubmitting}>
+                    Login
+                  </Button>
+                </form>
+              );
+            }}
+          </Formik>
+          <div style={{ color: 'red' }}>{errorMessage}</div>
+          <Socials />
+          <p>
+            Don&apos;t have account?{' '}
+            <Link href="/auth/register">
+              <a>Register</a>
+            </Link>
+          </p>
+        </Auth>
+      </Layout>
+    );
+  else {
+    return <div>Redirecting to home...</div>;
+  }
 }
