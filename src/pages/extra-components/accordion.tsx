@@ -6,11 +6,11 @@ import Col from '@paljs/ui/Col';
 import React, { useRef } from 'react';
 import Layout from 'Layouts';
 import { GetStaticProps } from 'next';
-import { checkToken, getToken } from '../../utils/cookies';
+import { checkToken } from '../../utils/cookies';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-const Accordions = (props: any) => {
+const Accordions = () => {
   const accordionRef = useRef<AccordionRefObject>(null);
   const style = { marginBottom: '1.5rem' };
   const router = useRouter();
@@ -101,7 +101,7 @@ const Accordions = (props: any) => {
   }
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async () => {
   //this doesn;t work because cookies are client side.
   // let _userToken: string = "";
   // if(checkToken() == true) {
