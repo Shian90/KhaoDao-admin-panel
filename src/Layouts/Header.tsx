@@ -182,11 +182,11 @@ const Header: React.FC<HeaderProps> = (props) => {
                   currentPath={router.pathname}
                   items={[
                     { title: 'Profile', link: { href: '/modal-overlays/tooltip' } },
-                    { title: 'Log out', link: { href: '/logout' } },
+                    { title: 'Log out', link: { href: '/auth/logout' } },
                   ]}
                   Link={Link}
                 >
-                  <User image="url('/icons/icon-72x72.png')" name="Ahmed Elywa" title="Manger" size="Medium" />
+                  <User image="" name="Super User" title="Admin" size="Medium" />
                 </ContextMenu>
               ),
             },

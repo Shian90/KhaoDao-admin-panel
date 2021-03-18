@@ -10,12 +10,31 @@ import Layout from 'Layouts';
 import axios from '../../../axios/axios';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
+import { setToken, checkToken } from '../../utils/cookies';
 
 export default function Login() {
   const router = useRouter();
+
+  const [errorMessage, setErrorMessage] = useState('');
   const onCheckbox = () => {
     // v will be true or false
   };
+
+  useEffect(() => {
+    // if(cookies.get("token") == undefined){
+    //   // console.log(cookies.get("token"));
+    // }
+    // else{
+    //   //console.log(cookies.get("token"));
+    //   //router.push("/extra-components/accordion")
+    // }
+
+    if (checkToken() == true) {
+      router.push('/extra-components/accordion');
+    } else {
+    }
+  }, []);
 
   const handleLoginRequest = async (email: string, password: string) => {
     const config = {
@@ -30,25 +49,18 @@ export default function Login() {
     bodyFormData.append('password', password);
     console.log('clicked');
 
-    // const req = {
-    //   userId: 1,
-    //   id: 1,
-    //   title: "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-    //   body: "quia et suscipit suscipit recusandae consequuntur expedita et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto"
-    //   }
-
     try {
       const res = await axios.post('/users/login/staff/', bodyFormData, config);
-      //const res = await axios.get('users/login/staff/');
 
-      if (res.status == 200 && res.data.token !== undefined) router.push('/extra-components/accordion');
-      //const res = await axios.get('/todos/1');
-      //const res = await axios.post('/posts',req,config);
-
-      console.log(res.data.token);
+      if (res.status == 200 && res.data.token !== undefined) {
+        setToken(res.data.token);
+        router.push('/extra-components/accordion');
+      } else {
+        setErrorMessage('Please enter correct credentials');
+      }
+      //console.log(res.data.token);
     } catch (err) {
-      //router.push('/extra-components/accordion');
-      console.log(err);
+      setErrorMessage('Error Connecting to server');
     }
   };
 
@@ -112,6 +124,7 @@ export default function Login() {
             );
           }}
         </Formik>
+        <div style={{ color: 'red' }}>{errorMessage}</div>
         <Socials />
         <p>
           Don&apos;t have account?{' '}
