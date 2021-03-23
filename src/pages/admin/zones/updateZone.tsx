@@ -1,5 +1,9 @@
-import { Layout } from '@paljs/ui/Layout';
+import Layout from 'Layouts';
 
 export default function UpdateZone() {
-  return <Layout title="Update Zone"></Layout>;
+  return (
+    <Layout title="Update Zone">
+      <div>Delete Zone</div>
+    </Layout>
+  );
 }

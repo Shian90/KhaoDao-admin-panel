@@ -1,5 +1,18 @@
 import axios from '../../axios/axios';
 
+export interface Zone {
+  id: number;
+  name: string;
+  north_geocode: string;
+  south_geocode: string;
+  east_geocode: string;
+  west_geocode: string;
+  north_east_geocode: string;
+  north_west_geocode: string;
+  south_east_geocode: string;
+  south_west_geocode: string;
+}
+
 const createZoneFormData = (
   name: string,
   north_geocode: string,

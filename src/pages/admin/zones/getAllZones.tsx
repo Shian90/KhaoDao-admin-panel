@@ -7,6 +7,7 @@ import Row from '@paljs/ui/Row';
 import Col from '@paljs/ui/Col';
 import { Accordion, AccordionItem, AccordionRefObject } from '@paljs/ui/Accordion';
 import { Button } from '@paljs/ui/Button';
+import { Zone } from '../../../networking/zones';
 
 export default function GetAllZones() {
   const [zones, setZones] = useState([]);
@@ -24,7 +25,7 @@ export default function GetAllZones() {
       <Row>
         <Col breakPoint={{ xs: 12, lg: 6 }}>
           <Accordion multi ref={accordionRef}>
-            {zones.map((zone) => (
+            {zones.map((zone: Zone) => (
               <AccordionItem uniqueKey={zone.id} title={zone.name}>
                 <div>north: {zone.north_geocode}</div>
                 <div>east: {zone.east_geocode}</div>
