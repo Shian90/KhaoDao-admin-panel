@@ -11,11 +11,54 @@ const items: MenuItemType[] = [
     group: true,
   },
   {
+    title: 'Admin',
+    icon: { name: 'star-outline' },
+    children: [
+      {
+        title: 'Zones',
+        children: [
+          {
+            title: 'View All Zones',
+            link: {
+              href: '/admin/zones/getAllZones',
+            },
+          },
+          {
+            title: 'Create a new Zone',
+            link: {
+              href: '/admin/zones/createZone',
+            },
+          },
+          {
+            title: 'Update a zone',
+            link: {
+              href: '/admin/zones/updateZone',
+            },
+          },
+          {
+            title: 'Delete a zone',
+            link: {
+              href: '/admin/zones/deleteZone',
+            },
+          },
+        ],
+      },
+      // {
+      //   title: 'Post Requests',
+      //   link: {href: '/extra-components/accordion' },
+      // },
+    ],
+  },
+  {
     title: 'Extra Components',
     icon: { name: 'star-outline' },
     children: [
       {
         title: 'Accordion',
+        link: { href: '/extra-components/accordion' },
+      },
+      {
+        title: 'My Accordion',
         link: { href: '/extra-components/accordion' },
       },
       {
