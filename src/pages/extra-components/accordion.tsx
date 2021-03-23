@@ -25,18 +25,18 @@ const Accordions = () => {
     if (checkToken() == false) {
       getAuth();
     } else {
-      // const formData = createZoneFormData(
-      //   'test4',
-      //   '23.33,32.3223',
-      //   '23.33,32.3223',
-      //   '23.33,32.3223',
-      //   '23.33,32.3223',
-      //   '23.33,32.3223',
-      //   '23.33,32.3223',
-      //   '23.33,32.3223',
-      //   '23.33,32.3223',
-      // );
-      // updateZone('ba254e9f8bb8072c0fdcb9c58382317408668c7b', formData, 6).then((value) => {
+      const formData = createZoneFormData(
+        'tes4',
+        '23.33,32.3223',
+        '23.33,32.3223',
+        '23.33,32.3223',
+        '23.33,32.3223',
+        '23.33,32.3223',
+        '23.33,32.3223',
+        '23.33,32.3223',
+        '23.33,32.3223',
+      );
+      // postZone('ba254e9f8bb8072c0fdcb9c58382317408668c7b', formData).then((value) => {
       //   console.log(value);
       // });
       // deleteZone('ba254e9f8bb8072c0fdcb9c58382317408668c7b',5).then((value) => {

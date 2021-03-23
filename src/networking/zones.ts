@@ -3,13 +3,13 @@ import axios from '../../axios/axios';
 const createZoneFormData = (
   name: string,
   north_geocode: string,
-  north_east_geocode: string,
-  east_geocode: string,
-  south_east_geocode: string,
   south_geocode: string,
-  south_west_geocode: string,
+  east_geocode: string,
   west_geocode: string,
+  north_east_geocode: string,
   north_west_geocode: string,
+  south_east_geocode: string,
+  south_west_geocode: string,
 ): FormData => {
   const zoneFormData = new FormData();
   zoneFormData.append('name', name);
