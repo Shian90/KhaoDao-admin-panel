@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react';
-import { getAllZones, deleteZone } from '../../../networking/zones';
+import { getAllZones } from '../../../networking/zones';
 import { getToken } from '../../../utils/cookies';
 import { useState } from 'react';
 import Layout from 'Layouts';
 import Row from '@paljs/ui/Row';
 import Col from '@paljs/ui/Col';
 import { Accordion, AccordionItem, AccordionRefObject } from '@paljs/ui/Accordion';
-import { Button } from '@paljs/ui/Button';
 import { Zone } from '../../../networking/zones';
 
 export default function GetAllZones() {
@@ -35,22 +34,7 @@ export default function GetAllZones() {
                 <div>North West:{zone.north_west_geocode}</div>
                 <div>South East: {zone.south_east_geocode}</div>
                 <div>South West: {zone.south_west_geocode}</div>
-                <div>
-                  <Button
-                    fullWidth
-                    appearance="hero"
-                    onClick={async () => {
-                      try {
-                        deleteZone(getToken(), zone.id);
-                        getAllZones(getToken()).then((value) => setZones(value));
-                      } catch (err) {
-                        console.log("couldn't delete zone");
-                      }
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </div>
+                <div></div>
               </AccordionItem>
             ))}
           </Accordion>

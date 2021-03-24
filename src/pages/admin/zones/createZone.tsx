@@ -19,6 +19,7 @@ export default function CreateZone() {
   //const [zones, setZones] = useState([]);
   //const accordionRef = useRef<AccordionRefObject>(null);
   var token = '';
+
   useEffect(() => {
     token = getToken();
 
@@ -46,7 +47,7 @@ export default function CreateZone() {
           onSubmit={async (values) => {
             try {
               const status = await postZone(
-                token,
+                getToken(),
                 createZoneFormData(
                   values.name,
                   values.north_geocode,
