@@ -1,8 +1,24 @@
 import axios from '../../axios/axios';
 
-export interface Status {
+export interface MerchantApplicant {
   id: number;
+  name: string;
   status: string;
+  address: string;
+  shop_name: string;
+  phone_no: string;
+  email: string;
+}
+
+export interface RiderApplicant {
+  id: number;
+  name: string;
+  status: string;
+  address: string;
+  //shop_name: string;
+  phone_no: string;
+  //email: string;
+  nid_no: string;
 }
 
 const createStatusFormData = (status: string): FormData => {

@@ -1,12 +1,14 @@
 import axios from '../../axios/axios';
 
 export interface ShopTag {
-  shop_tag_name: string;
+  id: number;
+  name: string;
 }
 
 export interface MapShopTagToShop {
-  shop_id: number;
-  shop_tag_id: number;
+  id: number;
+  shop_obj: number;
+  shop_tag_obj: number;
 }
 
 const createTagFormData = (shop_tag_name: string): FormData => {
@@ -30,7 +32,7 @@ const getAllTags = async (token: string) => {
   };
 
   try {
-    const res = await axios.get('/super/tags/', config);
+    const res = await axios.get('/super/merchants/tags/', config);
     console.log(res.status);
     return res.data;
   } catch (err) {
@@ -48,7 +50,7 @@ const postTag = async (token: string, TagFormData: FormData) => {
       },
     };
 
-    const res = await axios.post('/super/tags/', TagFormData, config);
+    const res = await axios.post('/super/merchants/tags/', TagFormData, config);
     //console.log(res);
     return res.status;
   } catch (err) {
@@ -67,7 +69,7 @@ const updateTag = async (token: string, TagFormData: FormData, id: number) => {
         Authorization: `Token ${token}`,
       },
     };
-    const res = await axios.put('/super/tags/', TagFormData, config);
+    const res = await axios.put('/super/merchants/tags/', TagFormData, config);
     console.log(res.data);
     return res.status;
   } catch (err) {

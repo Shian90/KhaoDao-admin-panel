@@ -1,15 +1,18 @@
 import axios from '../../axios/axios';
 
 export interface Merchant {
-  email: string;
-  full_name: string;
-  password: string;
+  merchant_id: number;
+  merchant_email: string;
+  merchant_name: string;
+  //password: string;
   shop_name: string;
   zone_name: string;
-  shop_category: string;
+  //shop_category: string;
   address: string;
-  gps_pos_x: string;
-  gps_pos_y: string;
+  gps_pos: string;
+  shop_id: number;
+  status: string;
+  is_available: boolean;
 }
 
 const createMerchantFormData = (
@@ -18,7 +21,7 @@ const createMerchantFormData = (
   password: string,
   shop_name: string,
   zone_name: string,
-  shop_category: string,
+  //shop_category: string,
   address: string,
   gps_pos_x: string,
   gps_pos_y: string,
@@ -30,7 +33,7 @@ const createMerchantFormData = (
   merchantFormData.append('shop_name', shop_name);
   merchantFormData.append('zone_name', zone_name);
   merchantFormData.append('address', address);
-  merchantFormData.append('shop_category', shop_category);
+  //merchantFormData.append('shop_category', shop_category);
   merchantFormData.append('gps_pos_x', gps_pos_x);
   merchantFormData.append('gps_pos_y', gps_pos_y);
   return merchantFormData;
