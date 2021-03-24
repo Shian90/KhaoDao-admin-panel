@@ -18,14 +18,14 @@ const Input = styled(InputGroup)`
 export default function CreateZone() {
   //const [zones, setZones] = useState([]);
   //const accordionRef = useRef<AccordionRefObject>(null);
-  var token = '';
+  //var token = '';
 
   useEffect(() => {
-    token = getToken();
+    //token = getToken();
 
     //getAllZones(token).then((value) => setZones(value));
     return () => {};
-  }, []);
+  });
   const [status, setStatus] = useState('');
 
   //const status: Status[] = ['Info', 'Success', 'Danger', 'Primary', 'Warning', 'Basic', 'Control'];
