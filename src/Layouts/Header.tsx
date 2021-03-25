@@ -149,7 +149,7 @@ const Header: React.FC<HeaderProps> = (props) => {
               content: (
                 <a
                   className="left"
-                  href={`https://github.com/paljs/nextjs-admin-template`}
+                  //href={`https://github.com/paljs/nextjs-admin-template`}
                   target="_blank"
                   rel="noreferrer"
                 >
