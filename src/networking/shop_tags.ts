@@ -11,6 +11,14 @@ export interface MapShopTagToShop {
   shop_tag_obj: number;
 }
 
+function shopTagIdToShopTag(id: number, shopTags: Array<ShopTag>): string {
+  console.log(shopTags);
+  const shopTag: Array<ShopTag> = shopTags.filter((s: ShopTag) => s.id === id);
+  if (shopTag.length > 0) return shopTag[0].name;
+
+  return 'Null';
+}
+
 const createTagFormData = (shop_tag_name: string): FormData => {
   const tagFormData = new FormData();
   tagFormData.append('shop_tag_name', shop_tag_name);
@@ -86,7 +94,7 @@ const deleteTag = async (token: string, id: number) => {
         Authorization: `Token ${token}`,
       },
     };
-    const res = await axios.delete(`/super/tags/?shop_tag_id=${id}`, config);
+    const res = await axios.delete(`/super/merchants/tags/?shop_tag_id=${id}`, config);
 
     console.log(res.data);
     return res.status;
@@ -162,4 +170,5 @@ export {
   getAllTagAssignment,
   deleteTagAssignment,
   postTagAssignement,
+  shopTagIdToShopTag,
 };

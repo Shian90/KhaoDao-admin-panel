@@ -19,6 +19,14 @@ export interface Merchant {
   //gps_pos_y?: string;
 }
 
+function shopIdToShopName(id: number, merchants: Array<Merchant>): string {
+  console.log(merchants);
+  console.log(id.toString());
+  const merchant: Array<Merchant> = merchants.filter((s: Merchant) => s.shop_id === id);
+  if (merchant.length > 0) return merchant[0].shop_name;
+  return 'Null';
+}
+
 const createMerchantFormData = (
   email: string,
   full_name: string,
@@ -122,4 +130,4 @@ const deleteMerchant = async (token: string, id: number) => {
   }
 };
 
-export { getAllMerchants, postMerchant, updateMerchant, deleteMerchant, createMerchantFormData };
+export { getAllMerchants, postMerchant, updateMerchant, deleteMerchant, createMerchantFormData, shopIdToShopName };
