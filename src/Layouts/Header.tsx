@@ -161,7 +161,7 @@ const Header: React.FC<HeaderProps> = (props) => {
             {
               content: (
                 <a
-                  href="https://join.slack.com/t/paljs/shared_invite/zt-ju5j9bb9-onkc9ZksqPZq~yIYJ3BfKw"
+                  //href="https://join.slack.com/t/paljs/shared_invite/zt-ju5j9bb9-onkc9ZksqPZq~yIYJ3BfKw"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -181,7 +181,7 @@ const Header: React.FC<HeaderProps> = (props) => {
                   placement="bottom"
                   currentPath={router.pathname}
                   items={[
-                    { title: 'Profile', link: { href: '/modal-overlays/tooltip' } },
+                    { title: 'Profile', link: { href: '/dashboard' } },
                     { title: 'Log out', link: { href: '/auth/logout' } },
                   ]}
                   Link={Link}
