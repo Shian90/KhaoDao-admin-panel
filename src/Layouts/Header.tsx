@@ -115,7 +115,7 @@ const Header: React.FC<HeaderProps> = (props) => {
             {
               content: (
                 <Link href="/">
-                  <a className="logo">Admin Template</a>
+                  <a className="logo">DeliverBae</a>
                 </Link>
               ),
             },
@@ -153,8 +153,8 @@ const Header: React.FC<HeaderProps> = (props) => {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <span className="github">Support us in GitHub</span>
-                  <img src={`https://badgen.net/github/stars/paljs/nextjs-admin-template`} />
+                  <span className="github">DeliverBae Admin Panel</span>
+                  {/* <img src={`https://badgen.net/github/stars/paljs/nextjs-admin-template`} /> */}
                 </a>
               ),
             },
@@ -165,13 +165,13 @@ const Header: React.FC<HeaderProps> = (props) => {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <img height="20" src="/slack.svg" alt="slack" />
+                  {/* <img height="20" src="/slack.svg" alt="slack" /> */}
                 </a>
               ),
             },
             {
-              icon: 'twitter',
-              url: { href: 'https://twitter.com/AhmedElywh', target: '_blank' },
+              // icon: 'twitter',
+              // url: { href: 'https://twitter.com/AhmedElywh', target: '_blank' },
             },
             {
               content: (

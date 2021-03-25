@@ -15,7 +15,7 @@ import { Card, CardBody } from '@paljs/ui/Card';
 import styled from 'styled-components';
 import { getAllZones } from '../../../networking/zones';
 import { Zone } from '../../../networking/zones';
-import { DisplayFormikState } from 'utils/formikHelper';
+//import { DisplayFormikState } from 'utils/formikHelper';
 //import { tokenToString } from 'typescript';
 
 export const SelectStyled = styled(Select)`
@@ -279,7 +279,7 @@ export default function UpdateMerchant() {
                     </CardBody>
                   </Card>
                 </Col>
-                <DisplayFormikState {...props} />
+                {/* <DisplayFormikState {...props} /> */}
               </form>
             );
           }}
