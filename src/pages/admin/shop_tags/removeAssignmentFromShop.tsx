@@ -16,7 +16,7 @@ import styled from 'styled-components';
 import { DisplayFormikState } from 'utils/formikHelper';
 //import { MapShopTagToShop } from '../../../networking/shop_tags';
 import { getAllMerchants, Merchant } from '../../../networking/merchants';
-import { postTagAssignement, ShopTag, getAllTags, createTagAssignmentFormData } from '../../../networking/shop_tags';
+import { deleteTagAssignment, ShopTag, getAllTags } from '../../../networking/shop_tags';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -114,9 +114,9 @@ export default function UpdateZone() {
     };
   }, []);
   return (
-    <Layout title="Update Zone">
+    <Layout title="Delete Assignment">
       <div>
-        <div>Update Tag</div>
+        {/* <div>Delete Assigned Tag</div> */}
 
         <Formik
           initialValues={{
@@ -132,12 +132,9 @@ export default function UpdateZone() {
                 shop_id: values.shop.value,
               };
 
-              const status = await postTagAssignement(
-                getToken(),
-                createTagAssignmentFormData(payload.shop_id, payload.shop_tag_id),
-              );
+              const status = await deleteTagAssignment(getToken(), payload.shop_id, payload.shop_tag_id);
               if (status === 200) {
-                setStatus('Assigned');
+                setStatus('Deleted');
               } else {
                 setStatus('Not assigned');
               }
@@ -163,7 +160,7 @@ export default function UpdateZone() {
               <form onSubmit={handleSubmit} style={{ width: '90%' }}>
                 <Col breakPoint={{ xs: 8, sm: 6, md: 8, lg: 12 }}>
                   <Card>
-                    <header>Assign Tag To Shop</header>
+                    <header>Delete Tag From Shop</header>
 
                     <header>Select Tag</header>
                     <SelectStyled
@@ -200,7 +197,7 @@ export default function UpdateZone() {
                     />
                     <CardBody>
                       <Button fullWidth appearance="hero" type="submit" disabled={isSubmitting}>
-                        Assign
+                        Delete
                       </Button>
                     </CardBody>
                   </Card>
