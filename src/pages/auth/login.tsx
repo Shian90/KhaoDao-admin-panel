@@ -31,7 +31,7 @@ export default function Login() {
     // }
 
     if (checkToken() == true) {
-      router.push('/extra-components/accordion');
+      router.push('/dashboard');
     } else {
     }
   }, []);
@@ -54,7 +54,7 @@ export default function Login() {
 
       if (res.status == 200 && res.data.token !== undefined) {
         setToken(res.data.token);
-        router.push('/extra-components/accordion');
+        router.push('/dashboard');
       } else {
         setErrorMessage('Please enter correct credentials');
       }
