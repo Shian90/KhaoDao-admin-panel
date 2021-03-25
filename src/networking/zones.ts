@@ -1,4 +1,5 @@
 import axios from '../../axios/axios';
+import { getToken } from '../utils/cookies';
 
 export interface Zone {
   id: number;
@@ -38,6 +39,12 @@ const createZoneFormData = (
 };
 
 const getAllZones = async (token: string) => {
+  if (token === undefined) {
+    token = getToken();
+  }
+
+  token = getToken();
+
   const config = {
     headers: {
       Authorization: `Token ${token}`,

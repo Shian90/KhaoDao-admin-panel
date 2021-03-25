@@ -53,10 +53,10 @@ export default function UpdateZone() {
   //const [zone,setZone] = useState(initialZone);
   const [zones, setZones] = useState([]);
   useEffect(() => {
-    const token = getToken();
+    //const token = getToken();
 
     try {
-      getAllZones(token).then((val) => {
+      getAllZones(getToken()).then((val) => {
         //console.log("amm here");
 
         val.map((v: Zone) => {

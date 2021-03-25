@@ -1,4 +1,5 @@
 import axios from '../../axios/axios';
+import { getToken } from '../utils/cookies';
 
 export interface Merchant {
   merchant_id: number;
@@ -13,6 +14,9 @@ export interface Merchant {
   shop_id: number;
   status: string;
   is_available: boolean;
+  //password?: string;
+  //gps_pos_x?: string;
+  //gps_pos_y?: string;
 }
 
 const createMerchantFormData = (
@@ -40,6 +44,13 @@ const createMerchantFormData = (
 };
 
 const getAllMerchants = async (token: String) => {
+  //console.log(getToken());
+  if (token === undefined) {
+    token = getToken();
+  }
+
+  token = getToken();
+
   const config = {
     headers: {
       Authorization: `Token ${token}`,

@@ -13,9 +13,9 @@ export default function ViewAllMerchants() {
   const accordionRef = useRef<AccordionRefObject>(null);
   //var token = "";
   useEffect(() => {
-    const token = getToken();
+    //const token = getToken();
 
-    getAllMerchants(token).then((value) => setMerchants(value));
+    getAllMerchants(getToken()).then((value) => setMerchants(value));
     return () => {};
   }, []);
 
