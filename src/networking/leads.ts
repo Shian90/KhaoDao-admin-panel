@@ -55,7 +55,7 @@ const updateMerchantLeadStatus = async (token: string, StatusFormData: FormData,
         Authorization: `Token ${token}`,
       },
     };
-    const res = await axios.put('/super/merchants/tags/assign/', StatusFormData, config);
+    const res = await axios.put('/super/applications/merchants/', StatusFormData, config);
     console.log(res.data);
     return res.status;
   } catch (err) {
