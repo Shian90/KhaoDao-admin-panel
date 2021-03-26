@@ -160,6 +160,20 @@ const items: MenuItemType[] = [
       },
     ],
   },
+  {
+    title: 'Restaurant',
+    icon: { name: 'lock-outline' },
+    children: [
+      {
+        title: 'Add New Restaurant',
+        link: { href: '/restaurant/addNewRestaurant' },
+      },
+      {
+        title: 'Get All Restaurant',
+        link: { href: '/restaurant/getAllRestaurant' },
+      },
+    ],
+  },
 ];
 
 export default items;

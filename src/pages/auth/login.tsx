@@ -7,11 +7,11 @@ import Link from 'next/link';
 import Auth, { Group } from 'components/Auth';
 import Socials from 'components/Auth/Socials';
 import Layout from 'Layouts';
-import axios from '../../../axios/axios';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { setToken, checkToken } from '../../utils/cookies';
+import { handleLogin } from 'controllers/authController/loginController';
 
 export default function Login() {
   const router = useRouter();
@@ -37,28 +37,16 @@ export default function Login() {
   }, []);
 
   const handleLoginRequest = async (email: string, password: string) => {
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        //'Access-Control-Allow-Origin':'*',
-      },
-    };
-
-    let bodyFormData = new FormData();
-    bodyFormData.append('email', email);
-    bodyFormData.append('password', password);
-    console.log('clicked');
-
     try {
-      const res = await axios.post('/users/login/staff/', bodyFormData, config);
+      var res = await handleLogin(email, password);
+      console.log('Login res: ', res);
 
-      if (res.status == 200 && res.data.token !== undefined) {
+      if (res.staus == 200 && res.data.token !== undefined) {
         setToken(res.data.token);
         router.push('/extra-components/accordion');
       } else {
-        setErrorMessage('Please enter correct credentials');
+        setErrorMessage(res.data.errMessage);
       }
-      //console.log(res.data.token);
     } catch (err) {
       setErrorMessage('Error Connecting to server');
     }
