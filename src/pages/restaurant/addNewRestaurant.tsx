@@ -21,15 +21,19 @@ function addNewRestaurant() {
       setLoading(true);
       const res = await addNewRestaurantController(name, address);
 
-      if (res.status == 201) {
+      if (res.data.success == true) {
+        setErrorMessage('');
         setRestaurant(res.data.restaurant.name);
         setLoading(false);
       } else {
+        setRestaurant('');
         setErrorMessage(res.data.errMessage);
         setLoading(false);
       }
     } catch (err) {
-      setErrorMessage(`Error Connecting to server ${err}`);
+      console.log('Error: ', err);
+      setRestaurant('');
+      setErrorMessage(`Error Connecting to server.`);
       setLoading(false);
     }
   };
@@ -44,7 +48,7 @@ function addNewRestaurant() {
           }}
         >
           {(props) => {
-            const { values, isSubmitting, handleChange, handleBlur, handleSubmit } = props;
+            const { values, handleChange, handleBlur, handleSubmit } = props;
             return (
               <form onSubmit={handleSubmit}>
                 <InputGroup fullWidth>

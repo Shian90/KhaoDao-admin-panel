@@ -10,13 +10,14 @@ import Layout from 'Layouts';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import { setToken, checkToken } from '../../utils/cookies';
+import { setToken, checkToken, getToken } from '../../utils/cookies';
 import { handleLogin } from 'controllers/authController/loginController';
 
 export default function Login() {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const onCheckbox = () => {
     // v will be true or false
   };
@@ -31,24 +32,31 @@ export default function Login() {
     // }
 
     if (checkToken() == true) {
-      router.push('/extra-components/accordion');
+      router.push('/dashboard');
     } else {
+      router.push('/auth/login');
     }
   }, []);
 
   const handleLoginRequest = async (email: string, password: string) => {
     try {
+      setLoading(true);
       var res = await handleLogin(email, password);
-      console.log('Login res: ', res);
 
-      if (res.staus == 200 && res.data.token !== undefined) {
+      if (res.data.success == true) {
         setToken(res.data.token);
-        router.push('/extra-components/accordion');
+        console.log('Tokeeeen from get: ', getToken());
+        setErrorMessage('');
+        setLoading(false);
+        router.push('/dashboard');
       } else {
         setErrorMessage(res.data.errMessage);
+        setLoading(false);
       }
     } catch (err) {
-      setErrorMessage('Error Connecting to server');
+      console.log('Error: ', err);
+      setLoading(false);
+      setErrorMessage(`Please Provide correct credentials.`);
     }
   };
 
@@ -69,7 +77,6 @@ export default function Login() {
                 //touched,
                 //errors,
                 //dirty,
-                isSubmitting,
                 handleChange,
                 handleBlur,
                 handleSubmit,
@@ -106,7 +113,7 @@ export default function Login() {
                     </Link>
                   </Group>
 
-                  <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={isSubmitting}>
+                  <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                     Login
                   </Button>
                 </form>

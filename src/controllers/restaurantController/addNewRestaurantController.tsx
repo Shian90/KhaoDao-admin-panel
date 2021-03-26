@@ -1,3 +1,4 @@
+import { getToken } from 'utils/cookies';
 import axios from '../../../axios/axios';
 
 export interface Restaurant {
@@ -6,16 +7,22 @@ export interface Restaurant {
 }
 
 export const addNewRestaurantController = async (name: string, address: string) => {
+  const config = {
+    headers: {
+      Authorization: `${getToken()}`,
+    },
+  };
+  console.log('Tokeeen: ', getToken());
   const reqBody = {
     name: name,
     address: address,
   };
 
   try {
-    const res = await axios.post('/admin/restaurant/new', reqBody);
+    const res = await axios.post('/admin/restaurant/new', reqBody, config);
     return res;
   } catch (err) {
     console.log('Error: ', err);
-    return err;
+    return err.response;
   }
 };
