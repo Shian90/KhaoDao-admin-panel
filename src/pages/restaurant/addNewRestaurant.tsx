@@ -14,18 +14,23 @@ function addNewRestaurant() {
 
   const [errorMessage, setErrorMessage] = useState('');
   const [restaurant, setRestaurant] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleAddRestaurant = async (name: string, address: string) => {
     try {
+      setLoading(true);
       const res = await addNewRestaurantController(name, address);
 
       if (res.status == 201) {
         setRestaurant(res.data.restaurant.name);
+        setLoading(false);
       } else {
         setErrorMessage(res.data.errMessage);
+        setLoading(false);
       }
     } catch (err) {
       setErrorMessage(`Error Connecting to server ${err}`);
+      setLoading(false);
     }
   };
 
@@ -63,7 +68,7 @@ function addNewRestaurant() {
                   />
                 </InputGroup>
 
-                <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={isSubmitting}>
+                <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                   Boss Add Maren
                 </Button>
               </form>
@@ -71,7 +76,7 @@ function addNewRestaurant() {
           }}
         </Formik>
         <div style={{ color: 'red' }}>{errorMessage}</div>
-        {restaurant ? <div style={{ color: 'green' }}>{`Successfully added ${restaurant}`}</div> : null}
+        {restaurant ? <div style={{ color: 'green', margin: 10 }}>{`Successfully added ${restaurant}`}</div> : null}
       </Auth>
     </Layout>
   );
