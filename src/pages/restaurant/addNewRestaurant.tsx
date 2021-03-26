@@ -14,18 +14,27 @@ function addNewRestaurant() {
 
   const [errorMessage, setErrorMessage] = useState('');
   const [restaurant, setRestaurant] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleAddRestaurant = async (name: string, address: string) => {
     try {
+      setLoading(true);
       const res = await addNewRestaurantController(name, address);
 
-      if (res.status == 201) {
+      if (res.data.success == true) {
+        setErrorMessage('');
         setRestaurant(res.data.restaurant.name);
+        setLoading(false);
       } else {
+        setRestaurant('');
         setErrorMessage(res.data.errMessage);
+        setLoading(false);
       }
     } catch (err) {
-      setErrorMessage(`Error Connecting to server ${err}`);
+      console.log('Error: ', err);
+      setRestaurant('');
+      setErrorMessage(`Error Connecting to server.`);
+      setLoading(false);
     }
   };
 
@@ -39,7 +48,7 @@ function addNewRestaurant() {
           }}
         >
           {(props) => {
-            const { values, isSubmitting, handleChange, handleBlur, handleSubmit } = props;
+            const { values, handleChange, handleBlur, handleSubmit } = props;
             return (
               <form onSubmit={handleSubmit}>
                 <InputGroup fullWidth>
@@ -63,7 +72,7 @@ function addNewRestaurant() {
                   />
                 </InputGroup>
 
-                <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={isSubmitting}>
+                <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                   Boss Add Maren
                 </Button>
               </form>
@@ -71,7 +80,7 @@ function addNewRestaurant() {
           }}
         </Formik>
         <div style={{ color: 'red' }}>{errorMessage}</div>
-        {restaurant ? <div style={{ color: 'green' }}>{`Successfully added ${restaurant}`}</div> : null}
+        {restaurant ? <div style={{ color: 'green', margin: 10 }}>{`Successfully added ${restaurant}`}</div> : null}
       </Auth>
     </Layout>
   );

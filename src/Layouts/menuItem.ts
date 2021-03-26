@@ -170,7 +170,7 @@ const items: MenuItemType[] = [
       },
       {
         title: 'Get All Restaurant',
-        link: { href: '/restaurant/getAllRestaurant' },
+        link: { href: '/restaurant/getAllRestaurants' },
       },
     ],
   },
