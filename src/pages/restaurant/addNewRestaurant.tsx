@@ -5,12 +5,12 @@ import React from 'react';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { Formik } from 'formik';
-import { useRouter } from 'next/router';
+//import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { addNewRestaurantController } from '../../controllers/restaurantController/addNewRestaurantController';
 
 function addNewRestaurant() {
-  const router = useRouter();
+  //const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState('');
   const [restaurant, setRestaurant] = useState('');
