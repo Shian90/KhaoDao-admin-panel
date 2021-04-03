@@ -178,6 +178,32 @@ const items: MenuItemType[] = [
       },
     ],
   },
+  {
+    title: 'Menu',
+    icon: { name: 'lock-outline' },
+    children: [
+      {
+        title: 'Add New Menu',
+        link: { href: '/menu/addMenu' },
+      },
+      {
+        title: 'Get All Menu',
+        link: { href: '/menu/getAllMenus' },
+      },
+      {
+        title: 'Update Menu',
+        link: { href: '/menu/updateMenu' },
+      },
+      {
+        title: 'Get single Menu',
+        link: { href: '/menu/getSingleMenu' },
+      },
+      {
+        title: 'make menu invisible',
+        link: { href: '/menu/makeMenuInvisible' },
+      },
+    ],
+  },
 ];
 
 export default items;
