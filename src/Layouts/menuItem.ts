@@ -194,14 +194,6 @@ const items: MenuItemType[] = [
         title: 'Update Menu',
         link: { href: '/menu/updateMenu' },
       },
-      {
-        title: 'Get single Menu',
-        link: { href: '/menu/getSingleMenu' },
-      },
-      {
-        title: 'make menu invisible',
-        link: { href: '/menu/makeMenuInvisible' },
-      },
     ],
   },
 ];
