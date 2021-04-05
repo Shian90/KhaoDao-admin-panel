@@ -1,12 +1,6 @@
 import { getToken } from 'utils/cookies';
 import axios from '../../../axios/axios';
 
-export interface Restaurant {
-  _id: string;
-  name: string;
-  address: string;
-}
-
 export const updateRestaurantController = async (name: string, address: string, id: string) => {
   const config = {
     headers: {

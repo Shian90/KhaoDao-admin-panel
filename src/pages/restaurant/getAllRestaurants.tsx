@@ -1,12 +1,12 @@
 import Layout from 'Layouts';
-import MyCard from 'components/Restaurant/card';
+import MyCard from 'components/MyComponents/card';
 import { getAllRestaurantsController } from 'controllers/restaurantController/getAllRestaurantsController';
 import React, { useEffect, useState } from 'react';
 import style from '../../css/admin.module.css';
 import { Restaurant } from 'Models/Restaurant';
 import { makeRestaurantInvisibleController } from 'controllers/restaurantController/makeRestaurantInvisible';
 
-function getAllRestaurants(props) {
+function getAllRestaurants() {
   const [restaurants, setRestaurants] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

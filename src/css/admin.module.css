@@ -18,3 +18,8 @@
   align-items: center;
   justify-content: center;
 }
+
+.cardDetail {
+  display: flex;
+  flex-direction: column;
+}

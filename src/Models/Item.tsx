@@ -1,3 +1,5 @@
+import { Restaurant } from './Restaurant';
+
 export interface Item {
   price: number;
   description: string;
@@ -8,7 +10,7 @@ export interface Item {
   visible: boolean;
   _id: string;
   name: string;
-  seller: string;
+  seller: Restaurant;
   category: string;
   reviews: any[];
   createdAt: string;
