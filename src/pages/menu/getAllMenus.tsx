@@ -1,5 +1,5 @@
 import Layout from 'Layouts';
-import MyCard from 'components/Restaurant/card';
+import MyCard from 'components/MyComponents/card';
 import { getAllMenusController } from 'controllers/menuController/menuController';
 import React, { useEffect, useState } from 'react';
 import style from '../../css/admin.module.css';

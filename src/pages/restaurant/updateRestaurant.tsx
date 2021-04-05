@@ -129,7 +129,6 @@ function addNewRestaurant() {
                     setFieldValue('id', value);
                     //const tag = restaurantIdToRestaurantAdapter(value.value, tags);
                     //console.log(zone);
-                    console.log(value.value);
                     setFieldValue('name', value.label);
                     setFieldValue('address', value.address);
                   }}

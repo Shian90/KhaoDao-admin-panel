@@ -196,6 +196,25 @@ const items: MenuItemType[] = [
       },
     ],
   },
+
+  {
+    title: 'Items',
+    icon: { name: 'lock-outline' },
+    children: [
+      {
+        title: 'Add New Item',
+        link: { href: '/items/addNewItem' },
+      },
+      {
+        title: 'Get All Items',
+        link: { href: '/items/getAllItems' },
+      },
+      {
+        title: 'Update Item',
+        link: { href: '/items/updateItem' },
+      },
+    ],
+  },
 ];
 
 export default items;
