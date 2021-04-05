@@ -31,7 +31,7 @@ export const addNewMenuController = async (name: string, address: string) => {
 export const getAllMenusController = async () => {
   try {
     const res = await axios.get('/menus');
-    console.log('Restaurants: ', res);
+    console.log('Menus: ', res);
     return res;
   } catch (err) {
     console.log('Error: ', err);
@@ -55,7 +55,7 @@ export const makeMenuInvisibleController = async (id: string) => {
   }
 };
 
-export const updateMenuController = async (name: string, address: string, id: string) => {
+export const updateMenuController = async (name: string, restaurant_id: string, id: string) => {
   const config = {
     headers: {
       Authorization: `${getToken()}`,
@@ -64,7 +64,7 @@ export const updateMenuController = async (name: string, address: string, id: st
   console.log('Tokeeen: ', getToken());
   const reqBody = {
     name: name,
-    restaurant: address,
+    restaurant: restaurant_id,
   };
 
   try {
