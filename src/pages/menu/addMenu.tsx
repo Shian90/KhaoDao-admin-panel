@@ -45,7 +45,7 @@ class SelectItem {
   }
 }
 
-function addNewRestaurant() {
+function addNewMenu() {
   //const router = useRouter();
   const options = new Array();
   const [errorMessage, setErrorMessage] = useState('');
@@ -167,4 +167,4 @@ function addNewRestaurant() {
   );
 }
 
-export default addNewRestaurant;
+export default addNewMenu;

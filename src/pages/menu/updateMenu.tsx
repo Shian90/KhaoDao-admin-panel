@@ -7,15 +7,14 @@ import Layout from 'Layouts';
 import { Formik } from 'formik';
 //import { useRouter } from 'next/router';
 import { useState } from 'react';
-//import { addNewRestaurantController } from '../../controllers/restaurantController/addNewRestaurantController';
-//import { Restaurant, updateRestaurantController } from 'controllers/restaurantController/updateRestaurantController';
-//import { getAllRestaurantsController } from 'controllers/restaurantController/getAllRestaurantsController';
-
-import { Menu, updateMenuController, getAllMenusController } from '../../controllers/menuController/menuController';
-import styled from 'styled-components';
-//import { DisplayFormikState } from 'utils/formikHelper';
-import Select from '@paljs/ui/Select';
+import { getAllMenusController, updateMenuController } from '../../controllers/menuController/menuController';
 import { useEffect } from 'react';
+import { getAllRestaurantsController } from '../../controllers/restaurantController/getAllRestaurantsController';
+
+import Select from '@paljs/ui/Select';
+import styled from 'styled-components';
+import { Restaurant } from '../../Models/Restaurant';
+import { Menu } from 'Models/Menu';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -47,29 +46,68 @@ class SelectItem {
   }
 }
 
-function addNewRestaurant() {
+function updateMenu() {
   //const router = useRouter();
   const options = new Array();
   const [errorMessage, setErrorMessage] = useState('');
-  const [restaurant, setRestaurant] = useState([]);
+  const [restaurant, setRestaurant] = useState('');
   const [loading, setLoading] = useState(false);
-  const [option, setOption] = useState(options);
+  const [restaurantOption, setRestaurantOption] = useState(options);
+  const [menuOption, setMenuOption] = useState(options);
+
+  const handleUpdateMenu = async (id: string, name: string, restaurant_id: string) => {
+    try {
+      setLoading(true);
+      const res = await updateMenuController(name, restaurant_id, id);
+
+      if (res.data.success == true) {
+        setErrorMessage('');
+        setRestaurant(res.data.menu.name);
+        setLoading(false);
+      } else {
+        setRestaurant('');
+        setErrorMessage(res.data.errMessage);
+        setLoading(false);
+      }
+    } catch (err) {
+      console.log('Error: ', err);
+      setRestaurant('');
+      setErrorMessage(`Error Connecting to server.`);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     getAllMenusController()
       .then((res) => {
+        if (res.data.success == true) {
+          res.data.menus.map((v: Menu) => {
+            setMenuOption((menuOption) => [
+              ...menuOption,
+              {
+                value: v._id,
+                label: v.name,
+              },
+            ]);
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+
+    getAllRestaurantsController()
+      .then((res) => {
         console.log('Could?');
         if (res.data.success == true) {
           console.log('Could');
-          res.data.restaurants.map((v: Menu) => {
+          res.data.restaurants.map((v: Restaurant) => {
             //console.log(option);
             //console.log(v._id);
-            setOption((option) => [
-              ...option,
+            setRestaurantOption((restaurantOption) => [
+              ...restaurantOption,
               {
-                value: v.id,
+                value: v._id,
                 label: v.name,
-                address: v.restaurant,
+                address: v.address,
               },
             ]);
           });
@@ -88,35 +126,13 @@ function addNewRestaurant() {
     return () => {};
   }, []);
 
-  const handleAddRestaurant = async (name: string, address: string, id: string) => {
-    try {
-      setLoading(true);
-      const res = await updateMenuController(name, address, id);
-
-      if (res.data.success == true) {
-        setErrorMessage('');
-        setRestaurant(res.data.restaurant.name);
-        setLoading(false);
-      } else {
-        setRestaurant([]);
-        setErrorMessage(res.data.errMessage);
-        setLoading(false);
-      }
-    } catch (err) {
-      console.log('Error: ', err);
-      setRestaurant([]);
-      setErrorMessage(`Error Connecting to server.`);
-      setLoading(false);
-    }
-  };
-
   return (
-    <Layout title="Add Restaurant">
-      <Auth title="Add Restaurant" subTitle="Add a restaurant here Bossmen">
+    <Layout title="Add Menu">
+      <Auth title="Add Menu" subTitle="Add a menu here Bossmen">
         <Formik
-          initialValues={{ name: '', address: '', id: new SelectItem('', '', '') }}
+          initialValues={{ name: '', menu_id: '', restaurant: {}, menu: {}, restaurant_id: '' }}
           onSubmit={async (values) => {
-            handleAddRestaurant(values.name, values.address, values.id.value);
+            handleUpdateMenu(values.menu_id, values.name, values.restaurant_id);
           }}
         >
           {(props) => {
@@ -124,56 +140,69 @@ function addNewRestaurant() {
             return (
               <form onSubmit={handleSubmit}>
                 <SelectStyled
-                  options={option}
+                  options={menuOption}
                   placeholder="Select"
-                  value={values.id}
+                  name="menu"
+                  value={values.menu}
                   onChange={(value: SelectItem) => {
-                    setFieldValue('id', value);
+                    setFieldValue('menu_id', value.value);
                     //const tag = restaurantIdToRestaurantAdapter(value.value, tags);
                     //console.log(zone);
-                    console.log(value.value);
+                    //console.log(value.value);
+                    setFieldValue('menu', value);
                     setFieldValue('name', value.label);
-                    setFieldValue('address', value.address);
+                    //setFieldValue('address', value.address);
                   }}
                   onBlur={handleBlur}
-                  touched={touched.id}
-                  error={errors.id}
+                  touched={touched.menu_id}
+                  error={errors.menu_id}
                   id="id"
                 />
+
                 <InputGroup fullWidth>
                   <input
                     id="name"
                     type="name"
-                    placeholder="Name of the Restaurant"
+                    placeholder="Name of the Menu"
                     value={values.name}
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
                 </InputGroup>
-                <InputGroup fullWidth>
-                  <input
-                    id="address"
-                    type="address"
-                    placeholder="Address of the Restaurant"
-                    value={values.address}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                </InputGroup>
+
+                <SelectStyled
+                  options={restaurantOption}
+                  placeholder="Select Restaurant"
+                  name="restaurant"
+                  value={values.restaurant}
+                  onChange={(value: SelectItem) => {
+                    setFieldValue('restaurant_id', value.value);
+                    //const tag = restaurantIdToRestaurantAdapter(value.value, tags);
+                    //console.log(zone);
+                    //console.log(value.value);
+                    setFieldValue('restaurant', value);
+                    //setFieldValue('address', value.address);
+                  }}
+                  onBlur={handleBlur}
+                  touched={touched.restaurant_id}
+                  error={errors.restaurant_id}
+                  id="id"
+                />
 
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
-                  Update Restaurant
+                  Boss Add Maren
                 </Button>
-                <div>{props.values.name}</div>
+
+                {/* <div>{props}</div> */}
               </form>
             );
           }}
         </Formik>
         <div style={{ color: 'red' }}>{errorMessage}</div>
-        {restaurant ? <div style={{ color: 'green', margin: 10 }}>{`Successfully Updated ${restaurant}`}</div> : null}
+        {restaurant ? <div style={{ color: 'green', margin: 10 }}>{`Successfully added`}</div> : null}
       </Auth>
     </Layout>
   );
 }
 
-export default addNewRestaurant;
+export default updateMenu;
