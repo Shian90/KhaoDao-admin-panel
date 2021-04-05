@@ -24,7 +24,7 @@ function getAllMenus() {
           setError('');
           setMenus(res.data.menus);
           //console.log(menus);
-          const rest = res.data.menus.map((menu: Menu) => {
+          res.data.menus.map((menu: Menu) => {
             getRestaurantNameFromId(menu.restaurant)
               .then((value) => setRestaurant((restaurant) => [...restaurant, value]))
               .catch((err) => console.log(err));
