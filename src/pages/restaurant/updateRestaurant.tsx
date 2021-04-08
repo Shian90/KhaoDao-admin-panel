@@ -109,8 +109,8 @@ function addNewRestaurant() {
   };
 
   return (
-    <Layout title="Add Restaurant">
-      <Auth title="Add Restaurant" subTitle="Add a restaurant here Bossmen">
+    <Layout title="Update Restaurant">
+      <Auth title="Update Restaurant" subTitle="Update a restaurant here Bossmen">
         <Formik
           initialValues={{ name: '', address: '', id: new SelectItem('', '', '') }}
           onSubmit={async (values) => {

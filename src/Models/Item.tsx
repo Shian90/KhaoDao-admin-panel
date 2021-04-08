@@ -1,3 +1,4 @@
+import { Menu } from './Menu';
 import { Restaurant } from './Restaurant';
 
 export interface Item {
@@ -14,5 +15,6 @@ export interface Item {
   category: string;
   reviews: any[];
   createdAt: string;
+  menu: Menu;
   __v: number;
 }
