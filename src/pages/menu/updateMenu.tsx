@@ -125,8 +125,8 @@ function updateMenu() {
   };
 
   return (
-    <Layout title="Update Item">
-      <Auth title="Update Item" subTitle="Update item here Bossmen">
+    <Layout title="Update Menu">
+      <Auth title="Update Menu" subTitle="Update menu here Bossmen">
         <Formik
           initialValues={{
             name: '',
@@ -183,7 +183,7 @@ function updateMenu() {
                 </InputGroup>
 
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
-                  Update Item Brother
+                  Update Menu Brother
                 </Button>
               </form>
             );
