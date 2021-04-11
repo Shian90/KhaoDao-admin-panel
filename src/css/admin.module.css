@@ -18,3 +18,26 @@
   align-items: center;
   justify-content: center;
 }
+
+.cardDetail {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.infos {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardImageStyle {
+  height: 200px;
+  width: 200px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.description {
+  width: 500px;
+}

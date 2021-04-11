@@ -172,6 +172,51 @@ const items: MenuItemType[] = [
         title: 'Get All Restaurant',
         link: { href: '/restaurant/getAllRestaurants' },
       },
+      {
+        title: 'Update Restaurant',
+        link: { href: '/restaurant/updateRestaurant' },
+      },
+    ],
+  },
+  {
+    title: 'Menu',
+    icon: { name: 'lock-outline' },
+    children: [
+      {
+        title: 'Add New Menu',
+        link: { href: '/menu/addMenu' },
+      },
+      {
+        title: 'Get All Menu',
+        link: { href: '/menu/getAllMenus' },
+      },
+      {
+        title: 'Update Menu',
+        link: { href: '/menu/updateMenu' },
+      },
+    ],
+  },
+
+  {
+    title: 'Items',
+    icon: { name: 'lock-outline' },
+    children: [
+      {
+        title: 'Add New Item',
+        link: { href: '/items/addNewItem' },
+      },
+      {
+        title: 'Get All Items',
+        link: { href: '/items/getAllItems' },
+      },
+      {
+        title: 'Update Item',
+        link: { href: '/items/updateItem' },
+      },
+      // {
+      //   title: 'Upload Images',
+      //   link: { href: '/items/uploadimage' },
+      // },
     ],
   },
 ];

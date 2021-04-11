@@ -1,7 +1,7 @@
 import { getToken } from 'utils/cookies';
 import axios from '../../../axios/axios';
 
-export const addNewRestaurantController = async (name: string, address: string) => {
+export const updateRestaurantController = async (name: string, address: string, id: string) => {
   const config = {
     headers: {
       Authorization: `${getToken()}`,
@@ -14,7 +14,7 @@ export const addNewRestaurantController = async (name: string, address: string) 
   };
 
   try {
-    const res = await axios.post('/admin/restaurant/new', reqBody, config);
+    const res = await axios.put(`/admin/restaurant/${id}`, reqBody, config);
     return res;
   } catch (err) {
     console.log('Error: ', err);

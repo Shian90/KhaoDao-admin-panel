@@ -1,27 +1,27 @@
 import Layout from 'Layouts';
 import MyCard from 'components/MyComponents/card';
-import { getAllRestaurantsController } from 'controllers/restaurantController/getAllRestaurantsController';
 import React, { useEffect, useState } from 'react';
 import style from '../../css/admin.module.css';
-import { Restaurant } from 'Models/Restaurant';
-import { makeRestaurantInvisibleController } from 'controllers/restaurantController/makeRestaurantInvisible';
+import { getAllItemsController } from 'controllers/itemController/getAllItemsController';
+import { makeItemInvisibleController } from 'controllers/itemController/makeItemInvisibleController';
+import { Item } from 'Models/Item';
 
-function getAllRestaurants() {
-  const [restaurants, setRestaurants] = useState([]);
+function getAllItems() {
+  const [items, setItems] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [invisibleBtnDisable, setInvisibleBtnDisable] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    getAllRestaurantsController()
+    getAllItemsController()
       .then((res) => {
         if (res.data.success == true) {
           setError('');
-          setRestaurants(res.data.restaurants);
+          setItems(res.data.items);
           setLoading(false);
         } else {
-          setRestaurants([]);
+          setItems([]);
           setError(res.data.errMessage);
           setLoading(false);
         }
@@ -35,11 +35,11 @@ function getAllRestaurants() {
 
   const makeInvisible = (id: string) => {
     setInvisibleBtnDisable(true);
-    makeRestaurantInvisibleController(id)
+    makeItemInvisibleController(id)
       .then((res) => {
         if (res.data.success == true) {
-          setRestaurants(restaurants.filter((restaurant: Restaurant) => restaurant._id !== id));
-          alert(`Successfully removed ${res.data.restaurant.name}`);
+          setItems(items.filter((item: Item) => item._id !== id));
+          alert(`Successfully removed ${res.data.item.name}`);
         } else {
           alert(res.data.errMessage);
         }
@@ -53,15 +53,18 @@ function getAllRestaurants() {
   };
 
   return (
-    <Layout title="All restaurants">
+    <Layout title="All items">
       {!loading ? (
-        restaurants ? (
+        items ? (
           <div className={style.mycards}>
-            {restaurants.map((restaurant: Restaurant) => (
+            {items.map((item: Item) => (
               <MyCard
-                title={restaurant.name}
-                subtitle={restaurant.address}
-                onInvisibleClick={() => makeInvisible(restaurant._id)}
+                title={item.name}
+                restaurantName={item.seller.name}
+                menuName={item.menu.name}
+                description={item.description}
+                imageUrl={item.images[0]}
+                onInvisibleClick={() => makeInvisible(item._id)}
                 onLoading={invisibleBtnDisable}
               />
             ))}
@@ -79,4 +82,4 @@ function getAllRestaurants() {
   );
 }
 
-export default getAllRestaurants;
+export default getAllItems;
