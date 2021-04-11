@@ -106,10 +106,12 @@ function addNewItem() {
     description: string,
     sellerId: string,
     category: string,
+    images: any,
+    // review: string,
   ) => {
     try {
       setLoading(true);
-      const res = await addNewItemController(menuId, name, price, description, sellerId, category);
+      const res = await addNewItemController(menuId, name, price, description, sellerId, category, images);
 
       if (res.data.success == true) {
         setErrorMessage('');
@@ -140,6 +142,7 @@ function addNewItem() {
             menu: new SelectMenuItem('', 'Select a menu', ''),
             category: '',
             file: [],
+            // review: '',
           }}
           onSubmit={async (values) => {
             handleAddItem(
@@ -149,6 +152,8 @@ function addNewItem() {
               values.description,
               values.seller.value,
               values.category,
+              values.file,
+              // values.review,
             );
           }}
         >
@@ -188,7 +193,7 @@ function addNewItem() {
                   type="file"
                   multiple={true}
                   onChange={(event) => {
-                    setFieldValue('file', event.currentTarget.files);
+                    setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
                     console.log('Filee: ', event.currentTarget.files);
                   }}
                   className="form-control"
@@ -234,6 +239,17 @@ function addNewItem() {
                     onBlur={handleBlur}
                   />
                 </InputGroup>
+
+                {/* <InputGroup fullWidth>
+                  <input
+                    id="review"
+                    type="review"
+                    placeholder="Review of Item"
+                    value={values.review}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </InputGroup> */}
 
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                   Add Item Brosa

@@ -55,6 +55,7 @@ class SelectItem {
   restaurantId: string;
   menuId: string;
   price: number;
+  images: any;
 
   constructor(
     itemId: string,
@@ -64,6 +65,7 @@ class SelectItem {
     category: string,
     description: string,
     price: number,
+    images: any,
   ) {
     //console.log(v);
     this.label = itemName;
@@ -73,6 +75,7 @@ class SelectItem {
     this.category = category;
     this.description = description;
     this.price = price;
+    this.images = images;
   }
 }
 
@@ -126,6 +129,7 @@ function updateItem() {
                     restaurantId: restaurant._id,
                     menuId: menu._id,
                     price: item.price,
+                    images: item.images,
                   },
                 ]);
               });
@@ -152,10 +156,11 @@ function updateItem() {
     sellerId: string,
     category: string,
     itemId: string,
+    images: any,
   ) => {
     try {
       setLoading(true);
-      const res = await updateItemController(menuId, name, price, description, sellerId, category, itemId);
+      const res = await updateItemController(menuId, name, price, description, sellerId, category, itemId, images);
 
       if (res.data.success == true) {
         setErrorMessage('');
@@ -184,9 +189,9 @@ function updateItem() {
             description: '',
             seller: new SelectRestaurantItem('', 'Select a restaurant', ''),
             menu: new SelectMenuItem('', 'Select a menu', ''),
-            item: new SelectItem('', 'Select an item', '', '', '', '', 0),
+            item: new SelectItem('', 'Select an item', '', '', '', '', 0, []),
             category: '',
-            file: null,
+            files: [],
           }}
           onSubmit={async (values) => {
             handleAddItem(
@@ -197,6 +202,7 @@ function updateItem() {
               values.seller.value,
               values.category,
               values.item.value,
+              values.files,
             );
           }}
         >
@@ -244,6 +250,7 @@ function updateItem() {
                     console.log('item price: ', item.price);
                     setFieldValue('description', item.description);
                     setFieldValue('price', item.price);
+                    setFieldValue('files', item.images);
                   }}
                   onBlur={handleBlur}
                   touched={touched.item}
@@ -251,17 +258,17 @@ function updateItem() {
                   id="item"
                 />
 
-                <input
+                {/* <input
                   id="file"
                   name="file"
                   type="file"
                   onChange={(event) => {
-                    setFieldValue('file', event.currentTarget.files[0]);
+                    setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
                     console.log('Filee: ', event.currentTarget.files[0]);
                   }}
                   className="form-control"
                   required={false}
-                />
+                /> */}
                 <InputGroup fullWidth>
                   <input
                     id="name"

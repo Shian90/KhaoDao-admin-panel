@@ -9,6 +9,7 @@ export const updateItemController = async (
   sellerId: string,
   category: string,
   itemId: string,
+  images: any,
 ) => {
   const config = {
     headers: {
@@ -23,13 +24,10 @@ export const updateItemController = async (
     description: description,
     seller: sellerId,
     category: category,
-    images: [
-      'https://pakwired.com/wp-content/uploads/2017/09/pizza-1.jpg',
-      'https://pakwired.com/wp-content/uploads/2017/09/pizza-1.jpg',
-    ],
+    images: images,
   };
 
-  console.log('Req body: ', reqBody.name);
+  console.log('Req body: ', reqBody);
   try {
     const res = await axios.put(`/admin/item/${itemId}`, reqBody, config);
     console.log('update data: ', res.data);
