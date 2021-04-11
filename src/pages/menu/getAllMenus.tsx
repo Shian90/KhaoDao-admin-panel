@@ -25,9 +25,11 @@ function getAllMenus() {
           setMenus(res.data.menus);
           //console.log(menus);
           res.data.menus.map((menu: Menu) => {
-            getRestaurantNameFromId(menu.restaurant)
-              .then((value) => setRestaurant((restaurant) => [...restaurant, value]))
-              .catch((err) => console.log(err));
+            // getRestaurantNameFromId(menu.restaurant)
+            //   .then((value) => setRestaurant((restaurant) => [...restaurant, value]))
+            //   .catch((err) => console.log(err));
+
+            setRestaurant((restaurant) => [...restaurant, menu.restaurant.name]);
           });
           //setRestaurant(rest);
           console.log(restaurant);
@@ -86,7 +88,7 @@ function getAllMenus() {
             {menus.map((menu: Menu, index: number) => (
               <MyCard
                 title={menu.name}
-                subtitle={restaurant[index] ? restaurant[index] : 'Loading...'}
+                restaurantName={restaurant[index] ? restaurant[index] : 'Loading...'}
                 onInvisibleClick={() => makeInvisible(menu._id)}
                 onLoading={invisibleBtnDisable}
               />

@@ -8,7 +8,7 @@ export const makeRestaurantInvisibleController = async (id: string) => {
         Authorization: `${getToken()}`,
       },
     };
-    const res = await axios.put(`/admin/restaurant/${id}/visibility`, {}, config);
+    const res = await axios.put(`/admin/restaurant/${id}/visibility`, { visible: false }, config);
     console.log('Restaurants: ', res);
     return res;
   } catch (err) {
