@@ -121,17 +121,6 @@ function addNewMenu() {
             const { values, handleChange, handleBlur, handleSubmit, setFieldValue, touched, errors } = props;
             return (
               <form onSubmit={handleSubmit}>
-                <InputGroup fullWidth>
-                  <input
-                    id="name"
-                    type="name"
-                    placeholder="Name of the Menu"
-                    value={values.name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                </InputGroup>
-
                 <SelectStyled
                   options={option}
                   placeholder="Select"
@@ -150,6 +139,16 @@ function addNewMenu() {
                   error={errors.id}
                   id="id"
                 />
+                <InputGroup fullWidth>
+                  <input
+                    id="name"
+                    type="name"
+                    placeholder="Name of the Menu"
+                    value={values.name}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </InputGroup>
 
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                   Boss Add Maren

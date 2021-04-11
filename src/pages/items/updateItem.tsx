@@ -256,8 +256,8 @@ function updateItem() {
                   name="file"
                   type="file"
                   onChange={(event) => {
-                    setFieldValue('file', event.currentTarget.files[0]);
-                    console.log('Filee: ', event.currentTarget.files[0]);
+                    setFieldValue('file', event.currentTarget.files ? event.currentTarget.files[0] : null);
+                    //console.log('Filee: ', event.currentTarget!.files[0]);
                   }}
                   className="form-control"
                   required={false}
