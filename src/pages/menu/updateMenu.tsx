@@ -7,112 +7,84 @@ import Layout from 'Layouts';
 import { Formik } from 'formik';
 //import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { getAllMenusController, updateMenuController } from '../../controllers/menuController/menuController';
-import { useEffect } from 'react';
-import { getAllRestaurantsController } from '../../controllers/restaurantController/getAllRestaurantsController';
-
-import Select from '@paljs/ui/Select';
+//import { addNewRestaurantController } from '../../controllers/restaurantController/addNewRestaurantController';
+import { getAllRestaurantsController } from 'controllers/restaurantController/getAllRestaurantsController';
 import styled from 'styled-components';
-import { Restaurant } from '../../Models/Restaurant';
+//import { DisplayFormikState } from 'utils/formikHelper';
+import Select from '@paljs/ui/Select';
+import { useEffect } from 'react';
+import { Restaurant } from 'Models/Restaurant';
 import { Menu } from 'Models/Menu';
+//import { Item } from 'Models/Item';
+//import { updateItemController } from 'controllers/itemController/updateItemController';
+import { updateMenuController } from 'controllers/menuController/menuController';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
 `;
 
-// function restaurantIdToRestaurantAdapter(id: string, array : Array<Restaurant>): Restaurant {
-//    var restaurant = new Object() as Restaurant
-
-//    array.forEach((res) => {
-//     if (res.id === id) {
-//       //console.log(res.name);
-//       restaurant = res;
-//     }
-//   });
-
-//     return restaurant;
-// }
-
-class SelectItem {
+class SelectRestaurantItem {
   value: string;
   label: string;
-  address: string;
+  restaurantAddress: string;
 
-  constructor(v: string, l: string, a: string) {
+  constructor(restaurantId: string, restaurantName: string, restaurantAddress: string) {
     //console.log(v);
-    this.value = v;
-    this.label = l;
-    this.address = a;
+    this.label = restaurantName;
+    this.value = restaurantId;
+    this.restaurantAddress = restaurantAddress;
+  }
+}
+
+class SelectMenuItem {
+  value: string;
+  label: string;
+  restaurantId: string;
+
+  constructor(menuId: string, menuName: string, restaurantId: string) {
+    //console.log(v);
+    this.label = menuName;
+    this.value = menuId;
+    this.restaurantId = restaurantId;
   }
 }
 
 function updateMenu() {
-  //const router = useRouter();
-  const options = new Array();
+  const restaurantoptions = new Array();
+  const menuoptions = new Array();
+
   const [errorMessage, setErrorMessage] = useState('');
-  const [restaurant, setRestaurant] = useState('');
+  const [item, setItem] = useState('');
   const [loading, setLoading] = useState(false);
-  const [restaurantOption, setRestaurantOption] = useState(options);
-  const [menuOption, setMenuOption] = useState(options);
-
-  const handleUpdateMenu = async (id: string, name: string, restaurant_id: string) => {
-    try {
-      setLoading(true);
-      const res = await updateMenuController(name, restaurant_id, id);
-
-      if (res.data.success == true) {
-        setErrorMessage('');
-        setRestaurant(res.data.menu.name);
-        setLoading(false);
-      } else {
-        setRestaurant('');
-        setErrorMessage(res.data.errMessage);
-        setLoading(false);
-      }
-    } catch (err) {
-      console.log('Error: ', err);
-      setRestaurant('');
-      setErrorMessage(`Error Connecting to server.`);
-      setLoading(false);
-    }
-  };
+  const [restaurantOptions, setRestaurantOptions] = useState(restaurantoptions);
+  const [menuOptions, setMenuOptions] = useState(menuoptions);
 
   useEffect(() => {
-    getAllMenusController()
-      .then((res) => {
-        if (res.data.success == true) {
-          res.data.menus.map((v: Menu) => {
-            setMenuOption((menuOption) => [
-              ...menuOption,
-              {
-                value: v._id,
-                label: v.name,
-              },
-            ]);
-          });
-        }
-      })
-      .catch((err) => console.log(err));
-
     getAllRestaurantsController()
       .then((res) => {
         console.log('Could?');
         if (res.data.success == true) {
           console.log('Could');
-          res.data.restaurants.map((v: Restaurant) => {
-            //console.log(option);
-            //console.log(v._id);
-            setRestaurantOption((restaurantOption) => [
-              ...restaurantOption,
+          res.data.restaurants.map((restaurant: Restaurant) => {
+            setRestaurantOptions((restaurantOptions) => [
+              ...restaurantOptions,
               {
-                value: v._id,
-                label: v.name,
-                address: v.address,
+                value: restaurant._id,
+                label: restaurant.name,
+                restaurantAddress: restaurant.address,
               },
             ]);
+            restaurant.menu.map((menu: Menu) => {
+              setMenuOptions((menuOptions) => [
+                ...menuOptions,
+                {
+                  label: menu.name,
+                  value: menu._id,
+                  restaurantId: restaurant._id,
+                },
+              ]);
+            });
           });
-          //console.log(option);
-          setRestaurant(res.data.restaurant);
         } else {
           console.log('Could not');
           setLoading(false);
@@ -121,18 +93,50 @@ function updateMenu() {
       .catch((err) => {
         console.log('Error: ', err);
         setLoading(false);
-        //setError(`Internal Server Error.`);
       });
     return () => {};
   }, []);
 
+  const handleAddMenu = async (
+    menuId: string,
+    name: string,
+
+    restaurantId: string,
+  ) => {
+    try {
+      setLoading(true);
+      const res = await updateMenuController(name, restaurantId, menuId);
+
+      if (res.data.success == true) {
+        setErrorMessage('');
+        setItem(res.data.menu.name);
+        setLoading(false);
+      } else {
+        setItem('');
+        setErrorMessage(res.data.errMessage);
+        setLoading(false);
+      }
+    } catch (err) {
+      console.log('Error: ', err);
+      setItem('');
+      setErrorMessage(`Error Connecting to server.`);
+      setLoading(false);
+    }
+  };
+
   return (
-    <Layout title="Add Menu">
-      <Auth title="Add Menu" subTitle="Add a menu here Bossmen">
+    <Layout title="Update Item">
+      <Auth title="Update Item" subTitle="Update item here Bossmen">
         <Formik
-          initialValues={{ name: '', menu_id: '', restaurant: {}, menu: {}, restaurant_id: '' }}
+          initialValues={{
+            name: '',
+            seller: new SelectRestaurantItem('', 'Select a restaurant', ''),
+            menu: new SelectMenuItem('', 'Select a menu', ''),
+            restaurantId: '',
+            manuId: '',
+          }}
           onSubmit={async (values) => {
-            handleUpdateMenu(values.menu_id, values.name, values.restaurant_id);
+            handleAddMenu(values.menu.value, values.name, values.restaurantId);
           }}
         >
           {(props) => {
@@ -140,23 +144,31 @@ function updateMenu() {
             return (
               <form onSubmit={handleSubmit}>
                 <SelectStyled
-                  options={menuOption}
+                  options={restaurantOptions} //<option value="" label="" />
                   placeholder="Select"
-                  name="menu"
-                  value={values.menu}
-                  onChange={(value: SelectItem) => {
-                    setFieldValue('menu_id', value.value);
-                    //const tag = restaurantIdToRestaurantAdapter(value.value, tags);
-                    //console.log(zone);
-                    //console.log(value.value);
-                    setFieldValue('menu', value);
-                    setFieldValue('name', value.label);
-                    //setFieldValue('address', value.address);
+                  value={values.seller}
+                  onChange={(restaurant: SelectRestaurantItem) => {
+                    setFieldValue('seller', restaurant);
+                    setFieldValue('restaurantId', restaurant.value);
                   }}
                   onBlur={handleBlur}
-                  touched={touched.menu_id}
-                  error={errors.menu_id}
-                  id="id"
+                  touched={touched.seller}
+                  error={errors.seller}
+                  id="seller"
+                />
+
+                <SelectStyled
+                  options={menuOptions.filter((menu: SelectMenuItem) => menu.restaurantId === values.seller.value)} //<option value="" label="Select a color" />
+                  placeholder="Select"
+                  value={values.menu}
+                  onChange={(menu: SelectMenuItem) => {
+                    setFieldValue('menu', menu);
+                    setFieldValue('name', menu.label);
+                  }}
+                  onBlur={handleBlur}
+                  touched={touched.menu}
+                  error={errors.menu}
+                  id="menu"
                 />
 
                 <InputGroup fullWidth>
@@ -170,36 +182,15 @@ function updateMenu() {
                   />
                 </InputGroup>
 
-                <SelectStyled
-                  options={restaurantOption}
-                  placeholder="Select Restaurant"
-                  name="restaurant"
-                  value={values.restaurant}
-                  onChange={(value: SelectItem) => {
-                    setFieldValue('restaurant_id', value.value);
-                    //const tag = restaurantIdToRestaurantAdapter(value.value, tags);
-                    //console.log(zone);
-                    //console.log(value.value);
-                    setFieldValue('restaurant', value);
-                    //setFieldValue('address', value.address);
-                  }}
-                  onBlur={handleBlur}
-                  touched={touched.restaurant_id}
-                  error={errors.restaurant_id}
-                  id="id"
-                />
-
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
-                  Boss Add Maren
+                  Update Item Brother
                 </Button>
-
-                {/* <div>{props}</div> */}
               </form>
             );
           }}
         </Formik>
         <div style={{ color: 'red' }}>{errorMessage}</div>
-        {restaurant ? <div style={{ color: 'green', margin: 10 }}>{`Successfully added`}</div> : null}
+        {item ? <div style={{ color: 'green', margin: 10 }}>{`Successfully Updated ${item}`}</div> : null}
       </Auth>
     </Layout>
   );
