@@ -11,6 +11,7 @@ function MyCard({
   menuName = '',
   onInvisibleClick,
   onLoading,
+  address = '',
   imageUrl = '',
   review = '',
 }) {
@@ -24,13 +25,20 @@ function MyCard({
             <div className={style.infos}>
               {restaurantName !== '' ? (
                 <div>
-                  Restaurant: <span style={{ margin: '10px' }}>{restaurantName}</span>{' '}
+                  Restaurant: <span>{restaurantName}</span>{' '}
                 </div>
               ) : null}
               {menuName !== '' ? (
                 <div>
                   {' '}
-                  Menu: <span style={{ margin: '10px' }}>{menuName}</span>{' '}
+                  Menu: <span>{menuName}</span>{' '}
+                </div>
+              ) : null}
+
+              {address !== '' ? (
+                <div>
+                  {' '}
+                  Address: <span>{address}</span>{' '}
                 </div>
               ) : null}
               {description !== '' ? (
@@ -38,12 +46,12 @@ function MyCard({
                   Description: <span>{description}</span>
                 </div>
               ) : null}
+
               {review !== '' ? (
                 <div className={style.description}>
                   Review: <span>{review}</span>
                 </div>
               ) : null}
-
               <span>{subtitle}</span>
             </div>
           </div>

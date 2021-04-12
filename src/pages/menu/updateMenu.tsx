@@ -5,18 +5,13 @@ import React from 'react';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { Formik } from 'formik';
-//import { useRouter } from 'next/router';
 import { useState } from 'react';
-//import { addNewRestaurantController } from '../../controllers/restaurantController/addNewRestaurantController';
 import { getAllRestaurantsController } from 'controllers/restaurantController/getAllRestaurantsController';
 import styled from 'styled-components';
-//import { DisplayFormikState } from 'utils/formikHelper';
 import Select from '@paljs/ui/Select';
 import { useEffect } from 'react';
 import { Restaurant } from 'Models/Restaurant';
 import { Menu } from 'Models/Menu';
-//import { Item } from 'Models/Item';
-//import { updateItemController } from 'controllers/itemController/updateItemController';
 import { updateMenuController } from 'controllers/menuController/menuController';
 
 export const SelectStyled = styled(Select)`

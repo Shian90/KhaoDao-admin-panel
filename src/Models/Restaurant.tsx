@@ -1,6 +1,8 @@
 import { Menu } from './Menu';
 
 export interface Restaurant {
+  mainImage: string;
+  images: any[];
   menu: Menu[];
   reviews: any[];
   visible: boolean;

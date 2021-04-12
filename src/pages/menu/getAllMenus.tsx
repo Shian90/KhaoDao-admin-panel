@@ -4,7 +4,6 @@ import { getAllMenusController } from 'controllers/menuController/menuController
 import React, { useEffect, useState } from 'react';
 import style from '../../css/admin.module.css';
 import { Menu } from 'Models/Menu';
-//import { makeRestaurantInvisibleController } from 'controllers/restaurantController/makeRestaurantInvisible';
 import { makeMenuInvisibleController } from 'controllers/menuController/menuController';
 import { getRestaurantByIdController } from 'controllers/restaurantController/getRestaurantById';
 
@@ -12,6 +11,7 @@ function getAllMenus() {
   const emptyRes = new Array<string>();
   const [menus, setMenus] = useState([]);
   const [restaurant, setRestaurant] = useState(emptyRes);
+  const [restaurantAddress, setRestaurantAddress] = useState(emptyRes);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [invisibleBtnDisable, setInvisibleBtnDisable] = useState(false);
@@ -30,6 +30,7 @@ function getAllMenus() {
             //   .catch((err) => console.log(err));
 
             setRestaurant((restaurant) => [...restaurant, menu.restaurant.name]);
+            setRestaurantAddress((restaurantAddress) => [...restaurantAddress, menu.restaurant.address]);
           });
           //setRestaurant(rest);
           console.log(restaurant);
@@ -89,6 +90,7 @@ function getAllMenus() {
               <MyCard
                 title={menu.name}
                 restaurantName={restaurant[index] ? restaurant[index] : 'Loading...'}
+                address={restaurantAddress[index] ? restaurantAddress[index] : 'Loading...'}
                 onInvisibleClick={() => makeInvisible(menu._id)}
                 onLoading={invisibleBtnDisable}
               />

@@ -63,7 +63,7 @@ function getAllItems() {
                 restaurantName={item.seller.name}
                 menuName={item.menu.name}
                 description={item.description}
-                imageUrl={item.images[0]}
+                imageUrl={item.mainImage}
                 onInvisibleClick={() => makeInvisible(item._id)}
                 onLoading={invisibleBtnDisable}
               />

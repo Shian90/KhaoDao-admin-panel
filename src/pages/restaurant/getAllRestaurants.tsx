@@ -60,7 +60,8 @@ function getAllRestaurants() {
             {restaurants.map((restaurant: Restaurant) => (
               <MyCard
                 title={restaurant.name}
-                subtitle={restaurant.address}
+                address={restaurant.address}
+                imageUrl={restaurant.mainImage}
                 onInvisibleClick={() => makeInvisible(restaurant._id)}
                 onLoading={invisibleBtnDisable}
               />
