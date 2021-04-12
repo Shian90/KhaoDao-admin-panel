@@ -5,12 +5,9 @@ import React from 'react';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { Formik } from 'formik';
-//import { useRouter } from 'next/router';
 import { useState } from 'react';
-//import { addNewRestaurantController } from '../../controllers/restaurantController/addNewRestaurantController';
 import { getAllRestaurantsController } from 'controllers/restaurantController/getAllRestaurantsController';
 import styled from 'styled-components';
-//import { DisplayFormikState } from 'utils/formikHelper';
 import Select from '@paljs/ui/Select';
 import { useEffect } from 'react';
 import { Restaurant } from 'Models/Restaurant';
@@ -106,12 +103,13 @@ function addNewItem() {
     description: string,
     sellerId: string,
     category: string,
+    mainImage: any,
     images: any,
     // review: string,
   ) => {
     try {
       setLoading(true);
-      const res = await addNewItemController(menuId, name, price, description, sellerId, category, images);
+      const res = await addNewItemController(menuId, name, price, description, sellerId, category, mainImage, images);
 
       if (res.data.success == true) {
         setErrorMessage('');
@@ -142,6 +140,7 @@ function addNewItem() {
             menu: new SelectMenuItem('', 'Select a menu', ''),
             category: '',
             file: [],
+            mainFile: '',
             // review: '',
           }}
           onSubmit={async (values) => {
@@ -152,6 +151,7 @@ function addNewItem() {
               values.description,
               values.seller.value,
               values.category,
+              values.mainFile,
               values.file,
               // values.review,
             );
@@ -187,18 +187,36 @@ function addNewItem() {
                   error={errors.menu}
                   id="menu"
                 />
-                <input
-                  id="file"
-                  name="file"
-                  type="file"
-                  multiple={true}
-                  onChange={(event) => {
-                    setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
-                    console.log('Filee: ', event.currentTarget.files);
-                  }}
-                  className="form-control"
-                  required={false}
-                />
+                <div>
+                  <span>Main Image(Required): </span>
+                  <input
+                    id="mainFile"
+                    name="mainFile"
+                    type="file"
+                    multiple={false}
+                    onChange={(event) => {
+                      setFieldValue('mainFile', event.currentTarget.files ? event.currentTarget.files[0] : '');
+                      console.log('MainFilee: ', event.currentTarget.files[0]);
+                    }}
+                    className="form-control"
+                    required={true}
+                  />
+                </div>
+                <div>
+                  <span>Additional Images: </span>
+                  <input
+                    id="file"
+                    name="file"
+                    type="file"
+                    multiple={true}
+                    onChange={(event) => {
+                      setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
+                      console.log('Filee: ', event.currentTarget.files);
+                    }}
+                    className="form-control"
+                    required={false}
+                  />
+                </div>
                 <InputGroup fullWidth>
                   <input
                     id="name"

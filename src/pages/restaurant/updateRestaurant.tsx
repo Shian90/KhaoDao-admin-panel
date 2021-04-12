@@ -5,32 +5,17 @@ import React from 'react';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { Formik } from 'formik';
-//import { useRouter } from 'next/router';
 import { useState } from 'react';
-//import { addNewRestaurantController } from '../../controllers/restaurantController/addNewRestaurantController';
-import { Restaurant, updateRestaurantController } from 'controllers/restaurantController/updateRestaurantController';
+import { updateRestaurantController } from 'controllers/restaurantController/updateRestaurantController';
 import { getAllRestaurantsController } from 'controllers/restaurantController/getAllRestaurantsController';
 import styled from 'styled-components';
-//import { DisplayFormikState } from 'utils/formikHelper';
 import Select from '@paljs/ui/Select';
 import { useEffect } from 'react';
+import { Restaurant } from 'Models/Restaurant';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
 `;
-
-// function restaurantIdToRestaurantAdapter(id: string, array : Array<Restaurant>): Restaurant {
-//    var restaurant = new Object() as Restaurant
-
-//    array.forEach((res) => {
-//     if (res.id === id) {
-//       //console.log(res.name);
-//       restaurant = res;
-//     }
-//   });
-
-//     return restaurant;
-// }
 
 class SelectItem {
   value: string;

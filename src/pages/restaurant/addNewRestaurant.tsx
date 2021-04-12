@@ -5,21 +5,18 @@ import React from 'react';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { Formik } from 'formik';
-//import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { addNewRestaurantController } from '../../controllers/restaurantController/addNewRestaurantController';
 
 function addNewRestaurant() {
-  //const router = useRouter();
-
   const [errorMessage, setErrorMessage] = useState('');
   const [restaurant, setRestaurant] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleAddRestaurant = async (name: string, address: string) => {
+  const handleAddRestaurant = async (mainImage: any, images: any, name: string, address: string) => {
     try {
       setLoading(true);
-      const res = await addNewRestaurantController(name, address);
+      const res = await addNewRestaurantController(mainImage, images, name, address);
 
       if (res.data.success == true) {
         setErrorMessage('');
@@ -42,15 +39,45 @@ function addNewRestaurant() {
     <Layout title="Add Restaurant">
       <Auth title="Add Restaurant" subTitle="Add a restaurant here Bossmen">
         <Formik
-          initialValues={{ name: '', address: '' }}
+          initialValues={{ mainFile: '', file: [], name: '', address: '' }}
           onSubmit={async (values) => {
-            handleAddRestaurant(values.name, values.address);
+            handleAddRestaurant(values.mainFile, values.file, values.name, values.address);
           }}
         >
           {(props) => {
-            const { values, handleChange, handleBlur, handleSubmit } = props;
+            const { values, handleChange, handleBlur, handleSubmit, setFieldValue } = props;
             return (
               <form onSubmit={handleSubmit}>
+                <div>
+                  <span>Main Image(Required): </span>
+                  <input
+                    id="mainFile"
+                    name="mainFile"
+                    type="file"
+                    multiple={false}
+                    onChange={(event) => {
+                      setFieldValue('mainFile', event.currentTarget.files ? event.currentTarget.files[0] : '');
+                      console.log('Main Filee: ', event.currentTarget.files ? event.currentTarget.files[0] : '');
+                    }}
+                    className="form-control"
+                    required={true}
+                  />
+                </div>
+                <div>
+                  <span>Additional Images: </span>
+                  <input
+                    id="file"
+                    name="file"
+                    type="file"
+                    multiple={true}
+                    onChange={(event) => {
+                      setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
+                      console.log('Filee: ', event.currentTarget.files);
+                    }}
+                    className="form-control"
+                    required={false}
+                  />
+                </div>
                 <InputGroup fullWidth>
                   <input
                     id="name"

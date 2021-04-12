@@ -8,6 +8,7 @@ export const addNewItemController = async (
   description: string,
   sellerId: string,
   category: string,
+  mainImage: any,
   images: any,
   // review: string,
 ) => {
@@ -31,17 +32,20 @@ export const addNewItemController = async (
     menu: menuId,
     seller: sellerId,
     category: category,
+    mainImage: '',
     images: [],
     // reviews: [{ admin: review }],
   };
 
   const formData = new FormData();
   formData.append('item', JSON.stringify(reqBody));
-
+  formData.append('mainImage', mainImage);
   for (let i = 0; i < images.length; i++) {
     formData.append('assets', images[i]);
   }
-  console.log('Images: ', formData.get('item'));
+
+  console.log('Item: ', formData.get('item'));
+  console.log('MainImage: ', formData.get('mainImage'));
   console.log('Images: ', formData.get('assets'));
 
   try {
