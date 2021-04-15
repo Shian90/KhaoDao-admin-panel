@@ -5,6 +5,9 @@ export interface Restaurant {
   images: any[];
   menu: Menu[];
   reviews: any[];
+  totalRating: number;
+  adminRating: number;
+  numberOfReviews: number;
   visible: boolean;
   _id: string;
   name: string;

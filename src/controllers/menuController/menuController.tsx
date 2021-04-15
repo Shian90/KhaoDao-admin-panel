@@ -1,19 +1,13 @@
 import { getToken } from 'utils/cookies';
 import axios from '../../../axios/axios';
 
-export interface Menu {
-  id: number;
-  name: string;
-  restaurant: string;
-}
-
 export const addNewMenuController = async (name: string, address: string) => {
   const config = {
     headers: {
       Authorization: `${getToken()}`,
     },
   };
-  console.log('Tokeeen: ', getToken());
+  // console.log('Tokeeen: ', getToken());
   const reqBody = {
     name: name,
     restaurant: address,
@@ -47,7 +41,7 @@ export const makeMenuInvisibleController = async (id: string) => {
       },
     };
     const res = await axios.put(`/admin/menu/${id}/visibility`, { visible: false }, config);
-    console.log('Restaurants: ', res);
+    console.log('Menus: ', res);
     return res;
   } catch (err) {
     console.log('Error: ', err);
@@ -61,7 +55,7 @@ export const updateMenuController = async (name: string, restaurant_id: string, 
       Authorization: `${getToken()}`,
     },
   };
-  console.log('Tokeeen: ', getToken());
+  // console.log('Tokeeen: ', getToken());
   const reqBody = {
     name: name,
     restaurant: restaurant_id,

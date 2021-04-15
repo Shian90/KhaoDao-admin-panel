@@ -13,10 +13,16 @@ function addNewRestaurant() {
   const [restaurant, setRestaurant] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleAddRestaurant = async (mainImage: any, images: any, name: string, address: string) => {
+  const handleAddRestaurant = async (
+    mainImage: any,
+    images: any,
+    name: string,
+    address: string,
+    adminRating: number,
+  ) => {
     try {
       setLoading(true);
-      const res = await addNewRestaurantController(mainImage, images, name, address);
+      const res = await addNewRestaurantController(mainImage, images, name, address, adminRating);
 
       if (res.data.success == true) {
         setErrorMessage('');
@@ -39,9 +45,9 @@ function addNewRestaurant() {
     <Layout title="Add Restaurant">
       <Auth title="Add Restaurant" subTitle="Add a restaurant here Bossmen">
         <Formik
-          initialValues={{ mainFile: '', file: [], name: '', address: '' }}
+          initialValues={{ mainFile: '', file: [], name: '', address: '', adminRating: 0 }}
           onSubmit={async (values) => {
-            handleAddRestaurant(values.mainFile, values.file, values.name, values.address);
+            handleAddRestaurant(values.mainFile, values.file, values.name, values.address, values.adminRating);
           }}
         >
           {(props) => {
@@ -57,7 +63,6 @@ function addNewRestaurant() {
                     multiple={false}
                     onChange={(event) => {
                       setFieldValue('mainFile', event.currentTarget.files ? event.currentTarget.files[0] : '');
-                      console.log('Main Filee: ', event.currentTarget.files ? event.currentTarget.files[0] : '');
                     }}
                     className="form-control"
                     required={true}
@@ -72,7 +77,6 @@ function addNewRestaurant() {
                     multiple={true}
                     onChange={(event) => {
                       setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
-                      console.log('Filee: ', event.currentTarget.files);
                     }}
                     className="form-control"
                     required={false}
@@ -94,6 +98,16 @@ function addNewRestaurant() {
                     type="address"
                     placeholder="Address of the Restaurant"
                     value={values.address}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </InputGroup>
+                <InputGroup fullWidth>
+                  <input
+                    id="adminRating"
+                    type="adminRating"
+                    placeholder="AdminRating of the Restaurant"
+                    value={values.adminRating}
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />

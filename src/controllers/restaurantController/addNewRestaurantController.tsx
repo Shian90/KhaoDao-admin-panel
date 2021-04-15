@@ -1,20 +1,27 @@
 import { getToken } from 'utils/cookies';
 import axios from '../../../axios/axios';
 
-export const addNewRestaurantController = async (mainImage: any, images: any, name: string, address: string) => {
+export const addNewRestaurantController = async (
+  mainImage: any,
+  images: any,
+  name: string,
+  address: string,
+  adminRating: number,
+) => {
   const configFormData = {
     headers: {
       Authorization: `${getToken()}`,
       'Content-Type': 'multipart/form-data',
     },
   };
-  console.log('Tokeeen: ', getToken());
+  // console.log('Tokeeen: ', getToken());
 
   const reqBody = {
     mainImage: '',
     images: [],
     name: name,
     address: address,
+    adminRating: adminRating,
   };
 
   const formData = new FormData();

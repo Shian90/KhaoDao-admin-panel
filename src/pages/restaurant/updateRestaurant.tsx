@@ -21,16 +21,21 @@ class SelectItem {
   value: string;
   label: string;
   address: string;
+  adminRating: number;
+  mainImage: any;
+  images: any;
 
-  constructor(v: string, l: string, a: string) {
-    //console.log(v);
+  constructor(v: string, l: string, a: string, adminRating: number, mainImage: any, images: any) {
     this.value = v;
     this.label = l;
     this.address = a;
+    this.adminRating = adminRating;
+    this.mainImage = mainImage;
+    this.images = images;
   }
 }
 
-function addNewRestaurant() {
+function updateRestaurant() {
   //const router = useRouter();
   const options = new Array();
   const [errorMessage, setErrorMessage] = useState('');
@@ -41,44 +46,76 @@ function addNewRestaurant() {
   useEffect(() => {
     getAllRestaurantsController()
       .then((res) => {
-        console.log('Could?');
         if (res.data.success == true) {
-          console.log('Could');
           res.data.restaurants.map((v: Restaurant) => {
-            //console.log(option);
-            //console.log(v._id);
             setOption((option) => [
               ...option,
               {
                 value: v._id,
                 label: v.name,
                 address: v.address,
+                adminRating: v.adminRating,
+                mainImage: v.mainImage,
+                images: v.images,
               },
             ]);
           });
-          //console.log(option);
           setRestaurant(res.data.restaurant);
         } else {
-          console.log('Could not');
           setLoading(false);
         }
       })
       .catch((err) => {
         console.log('Error: ', err);
         setLoading(false);
-        //setError(`Internal Server Error.`);
       });
     return () => {};
   }, []);
 
-  const handleAddRestaurant = async (name: string, address: string, id: string) => {
+  const handleAddRestaurant = async (
+    name: string,
+    address: string,
+    id: string,
+    adminRating: string,
+    mainImage: any,
+    images: any,
+    updatedMainImage: any,
+    updatedImages: any,
+  ) => {
     try {
+      await option.forEach((option) => {
+        if (option.value == id) {
+          mainImage = option.mainImage;
+          images = option.images;
+        }
+      });
       setLoading(true);
-      const res = await updateRestaurantController(name, address, id);
+      const res = await updateRestaurantController(
+        name,
+        address,
+        id,
+        adminRating,
+        mainImage,
+        images,
+        updatedMainImage,
+        updatedImages,
+      );
 
       if (res.data.success == true) {
         setErrorMessage('');
         setRestaurant(res.data.restaurant.name);
+        let modifiedOptions = new Array();
+        option.forEach((option) => {
+          if (option.value == res.data.restaurant._id) {
+            option.label = res.data.restaurant.name;
+            option.address = res.data.restaurant.address;
+            option.adminRating = res.data.restaurant.adminRating;
+            option.mainImage = res.data.restaurant.mainImage;
+            option.images = res.data.restaurant.images;
+          }
+          modifiedOptions.push(option);
+        });
+        setOption(modifiedOptions);
         setLoading(false);
       } else {
         setRestaurant([]);
@@ -97,9 +134,27 @@ function addNewRestaurant() {
     <Layout title="Update Restaurant">
       <Auth title="Update Restaurant" subTitle="Update a restaurant here Bossmen">
         <Formik
-          initialValues={{ name: '', address: '', id: new SelectItem('', '', '') }}
+          initialValues={{
+            name: '',
+            address: '',
+            id: new SelectItem('', 'Select a restaurant', '', 0, '', []),
+            adminRating: '',
+            mainImage: '',
+            images: [],
+            updatedMainImage: undefined,
+            updatedImages: undefined,
+          }}
           onSubmit={async (values) => {
-            handleAddRestaurant(values.name, values.address, values.id.value);
+            handleAddRestaurant(
+              values.name,
+              values.address,
+              values.id.value,
+              values.adminRating,
+              values.mainImage,
+              values.images,
+              values.updatedMainImage,
+              values.updatedImages,
+            );
           }}
         >
           {(props) => {
@@ -113,14 +168,40 @@ function addNewRestaurant() {
                   onChange={(value: SelectItem) => {
                     setFieldValue('id', value);
                     //const tag = restaurantIdToRestaurantAdapter(value.value, tags);
-                    //console.log(zone);
                     setFieldValue('name', value.label);
                     setFieldValue('address', value.address);
+                    setFieldValue('adminRating', value.adminRating);
+                    setFieldValue('mainImage', value.mainImage);
+                    setFieldValue('images', value.images);
                   }}
                   onBlur={handleBlur}
                   touched={touched.id}
                   error={errors.id}
                   id="id"
+                />
+
+                <input
+                  id="mainFile"
+                  name="mainFile"
+                  type="file"
+                  multiple={false}
+                  onChange={(event) => {
+                    setFieldValue('updatedMainImage', event.currentTarget.files ? event.currentTarget.files[0] : []);
+                  }}
+                  className="form-control"
+                  required={false}
+                />
+
+                <input
+                  id="file"
+                  name="file"
+                  type="file"
+                  multiple={true}
+                  onChange={(event) => {
+                    setFieldValue('updatedImages', event.currentTarget.files ? event.currentTarget.files : []);
+                  }}
+                  className="form-control"
+                  required={false}
                 />
                 <InputGroup fullWidth>
                   <input
@@ -142,6 +223,16 @@ function addNewRestaurant() {
                     onBlur={handleBlur}
                   />
                 </InputGroup>
+                <InputGroup fullWidth>
+                  <input
+                    id="adminRating"
+                    type="adminRating"
+                    placeholder="AdminRating of the Restaurant"
+                    value={values.adminRating}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </InputGroup>
 
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                   Update Restaurant
@@ -158,4 +249,4 @@ function addNewRestaurant() {
   );
 }
 
-export default addNewRestaurant;
+export default updateRestaurant;

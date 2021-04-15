@@ -25,7 +25,6 @@ class SelectRestaurantItem {
   restaurantAddress: string;
 
   constructor(restaurantId: string, restaurantName: string, restaurantAddress: string) {
-    //console.log(v);
     this.label = restaurantName;
     this.value = restaurantId;
     this.restaurantAddress = restaurantAddress;
@@ -38,7 +37,6 @@ class SelectMenuItem {
   restaurantId: string;
 
   constructor(menuId: string, menuName: string, restaurantId: string) {
-    //console.log(v);
     this.label = menuName;
     this.value = menuId;
     this.restaurantId = restaurantId;
@@ -53,6 +51,8 @@ class SelectItem {
   menuId: string;
   price: number;
   images: any;
+  adminRating: number;
+  mainImage: any;
 
   constructor(
     itemId: string,
@@ -63,8 +63,9 @@ class SelectItem {
     description: string,
     price: number,
     images: any,
+    adminRating: number,
+    mainImage: any,
   ) {
-    //console.log(v);
     this.label = itemName;
     this.value = itemId;
     this.restaurantId = restaurantId;
@@ -73,6 +74,8 @@ class SelectItem {
     this.description = description;
     this.price = price;
     this.images = images;
+    this.adminRating = adminRating;
+    this.mainImage = mainImage;
   }
 }
 
@@ -91,13 +94,8 @@ function updateItem() {
   useEffect(() => {
     getAllRestaurantsController()
       .then((res) => {
-        console.log('Could?');
         if (res.data.success == true) {
-          console.log('Could');
           res.data.restaurants.map((restaurant: Restaurant) => {
-            //console.log(option);
-            //console.log(v._id);
-
             setRestaurantOptions((restaurantOptions) => [
               ...restaurantOptions,
               {
@@ -127,13 +125,14 @@ function updateItem() {
                     menuId: menu._id,
                     price: item.price,
                     images: item.images,
+                    adminRating: item.adminRating,
+                    mainImage: item.mainImage,
                   },
                 ]);
               });
             });
           });
         } else {
-          console.log('Could not');
           setLoading(false);
         }
       })
@@ -154,14 +153,53 @@ function updateItem() {
     category: string,
     itemId: string,
     images: any,
+    adminRating: string,
+    mainImage: string,
+    updatedMainImage: any,
+    updatedImages: any,
   ) => {
     try {
+      await itemOptions.forEach((itemOption) => {
+        if (itemOption.value == itemId) {
+          mainImage = itemOption.mainImage;
+          images = itemOption.images;
+        }
+      });
+
       setLoading(true);
-      const res = await updateItemController(menuId, name, price, description, sellerId, category, itemId, images);
+      const res = await updateItemController(
+        menuId,
+        name,
+        price,
+        description,
+        sellerId,
+        category,
+        itemId,
+        images,
+        adminRating,
+        mainImage,
+        updatedMainImage,
+        updatedImages,
+      );
 
       if (res.data.success == true) {
         setErrorMessage('');
         setItem(res.data.item.name);
+
+        let modifiedItemOptions = new Array();
+        itemOptions.forEach((itemOption) => {
+          if (itemOption.value == res.data.item._id) {
+            itemOption.label = res.data.item.name;
+            itemOption.category = res.data.item.category;
+            itemOption.description = res.data.item.description;
+            itemOption.price = res.data.item.price;
+            itemOption.adminRating = res.data.item.adminRating;
+            itemOption.mainImage = res.data.item.mainImage;
+            itemOption.images = res.data.item.images;
+          }
+          modifiedItemOptions.push(itemOption);
+        });
+        setItemOptions(modifiedItemOptions);
         setLoading(false);
       } else {
         setItem('');
@@ -186,9 +224,13 @@ function updateItem() {
             description: '',
             seller: new SelectRestaurantItem('', 'Select a restaurant', ''),
             menu: new SelectMenuItem('', 'Select a menu', ''),
-            item: new SelectItem('', 'Select an item', '', '', '', '', 0, []),
+            item: new SelectItem('', 'Select an item', '', '', '', '', 0, [], 0, ''),
             category: '',
-            files: [],
+            images: [],
+            mainImage: '',
+            updatedImages: undefined,
+            updatedMainImage: undefined,
+            adminRating: '',
           }}
           onSubmit={async (values) => {
             handleAddItem(
@@ -199,7 +241,11 @@ function updateItem() {
               values.seller.value,
               values.category,
               values.item.value,
-              values.files,
+              values.images,
+              values.adminRating,
+              values.mainImage,
+              values.updatedMainImage,
+              values.updatedImages,
             );
           }}
         >
@@ -244,10 +290,11 @@ function updateItem() {
                     setFieldValue('item', item);
                     setFieldValue('name', item.label);
                     setFieldValue('category', item.category);
-                    console.log('item price: ', item.price);
                     setFieldValue('description', item.description);
                     setFieldValue('price', item.price);
-                    setFieldValue('files', item.images);
+                    setFieldValue('images', item.images);
+                    setFieldValue('mainImage', item.mainImage);
+                    setFieldValue('adminRating', item.adminRating);
                   }}
                   onBlur={handleBlur}
                   touched={touched.item}
@@ -255,18 +302,29 @@ function updateItem() {
                   id="item"
                 />
 
-                {/* <input
-                  id="file"
-                  name="file"
+                <input
+                  id="mainFile"
+                  name="mainFile"
                   type="file"
+                  multiple={false}
                   onChange={(event) => {
-                    setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
-                    console.log('Filee: ', event.currentTarget.files[0]);
-
+                    setFieldValue('updatedMainImage', event.currentTarget.files ? event.currentTarget.files[0] : []);
                   }}
                   className="form-control"
                   required={false}
-                /> */}
+                />
+
+                <input
+                  id="file"
+                  name="file"
+                  type="file"
+                  multiple={true}
+                  onChange={(event) => {
+                    setFieldValue('updatedImages', event.currentTarget.files ? event.currentTarget.files : []);
+                  }}
+                  className="form-control"
+                  required={false}
+                />
                 <InputGroup fullWidth>
                   <input
                     id="name"
@@ -303,6 +361,17 @@ function updateItem() {
                     type="description"
                     placeholder="Description of Item"
                     value={values.description}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </InputGroup>
+
+                <InputGroup fullWidth>
+                  <input
+                    id="adminRating"
+                    type="adminRating"
+                    placeholder="AdminRating of Item"
+                    value={values.adminRating}
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />

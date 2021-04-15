@@ -24,7 +24,6 @@ class SelectRestaurantItem {
   restaurantAddress: string;
 
   constructor(restaurantId: string, restaurantName: string, restaurantAddress: string) {
-    //console.log(v);
     this.label = restaurantName;
     this.value = restaurantId;
     this.restaurantAddress = restaurantAddress;
@@ -37,7 +36,6 @@ class SelectMenuItem {
   restaurantId: string;
 
   constructor(menuId: string, menuName: string, restaurantId: string) {
-    //console.log(v);
     this.label = menuName;
     this.value = menuId;
     this.restaurantId = restaurantId;
@@ -57,9 +55,7 @@ function updateMenu() {
   useEffect(() => {
     getAllRestaurantsController()
       .then((res) => {
-        console.log('Could?');
         if (res.data.success == true) {
-          console.log('Could');
           res.data.restaurants.map((restaurant: Restaurant) => {
             setRestaurantOptions((restaurantOptions) => [
               ...restaurantOptions,
@@ -81,7 +77,6 @@ function updateMenu() {
             });
           });
         } else {
-          console.log('Could not');
           setLoading(false);
         }
       })
@@ -105,6 +100,14 @@ function updateMenu() {
       if (res.data.success == true) {
         setErrorMessage('');
         setItem(res.data.menu.name);
+        let modifiedMenuOptions = new Array();
+        menuOptions.map((menuOption) => {
+          if (menuOption.value == res.data.menu._id) {
+            menuOption.label = res.data.menu.name;
+          }
+          modifiedMenuOptions.push(menuOption);
+        });
+        setMenuOptions(modifiedMenuOptions);
         setLoading(false);
       } else {
         setItem('');

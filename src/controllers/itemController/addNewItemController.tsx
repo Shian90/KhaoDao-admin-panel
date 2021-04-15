@@ -10,7 +10,7 @@ export const addNewItemController = async (
   category: string,
   mainImage: any,
   images: any,
-  // review: string,
+  adminRating: number,
 ) => {
   const configFormData = {
     headers: {
@@ -23,7 +23,8 @@ export const addNewItemController = async (
       Authorization: `${getToken()}`,
     },
   };
-  console.log('Tokeeen: ', getToken());
+
+  // console.log('Tokeeen: ', getToken());
 
   const reqBody = {
     name: name,
@@ -34,7 +35,7 @@ export const addNewItemController = async (
     category: category,
     mainImage: '',
     images: [],
-    // reviews: [{ admin: review }],
+    adminRating: adminRating,
   };
 
   const formData = new FormData();
@@ -44,9 +45,9 @@ export const addNewItemController = async (
     formData.append('assets', images[i]);
   }
 
-  console.log('Item: ', formData.get('item'));
-  console.log('MainImage: ', formData.get('mainImage'));
-  console.log('Images: ', formData.get('assets'));
+  // console.log('Item: ', formData.get('item'));
+  // console.log('MainImage: ', formData.get('mainImage'));
+  // console.log('Images: ', formData.get('assets'));
 
   try {
     const res = await axios.post('/admin/items/new', formData, configFormData);
