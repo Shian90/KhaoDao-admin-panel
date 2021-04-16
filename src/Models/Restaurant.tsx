@@ -2,9 +2,9 @@ import { Menu } from './Menu';
 
 export interface Restaurant {
   mainImage: string;
-  images: any[];
+  images: any;
   menu: Menu[];
-  reviews: any[];
+  reviews: any;
   totalRating: number;
   adminRating: number;
   numberOfReviews: number;

@@ -62,6 +62,7 @@ function getAllRestaurants() {
                 title={restaurant.name}
                 address={restaurant.address}
                 imageUrl={restaurant.mainImage}
+                additionalImages={restaurant.images}
                 onInvisibleClick={() => makeInvisible(restaurant._id)}
                 onLoading={invisibleBtnDisable}
               />

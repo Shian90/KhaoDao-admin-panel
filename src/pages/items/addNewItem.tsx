@@ -1,6 +1,7 @@
 import { Button } from '@paljs/ui/Button';
 import { InputGroup } from '@paljs/ui/Input';
 import React from 'react';
+import Resizer from 'react-image-file-resizer';
 
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
@@ -97,7 +98,7 @@ function addNewItem() {
     category: string,
     mainImage: any,
     images: any,
-    adminRating: number,
+    adminRating: string,
   ) => {
     try {
       setLoading(true);
@@ -130,6 +131,42 @@ function addNewItem() {
     }
   };
 
+  const resizeFile = (file: any) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        1920,
+        1080,
+        'JPEG',
+        10,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        'file',
+      );
+    });
+
+  const resizeFiles = (files: any) => {
+    let uris: any = [];
+    if (files !== []) {
+      for (let i = 0; i < files.length; i++) {
+        Resizer.imageFileResizer(
+          files[i],
+          1920,
+          1080,
+          'JPEG',
+          10,
+          0,
+          (uri) => {
+            uris.push(uri);
+          },
+          'file',
+        );
+      }
+      return uris;
+    } else return [];
+  };
   return (
     <Layout title="Add New Item">
       <Auth title="Add New Item" subTitle="Add a New Item here Bossmen">
@@ -143,7 +180,7 @@ function addNewItem() {
             category: '',
             file: [],
             mainFile: '',
-            adminRating: 0,
+            adminRating: '',
           }}
           onSubmit={async (values) => {
             handleAddItem(
@@ -194,9 +231,17 @@ function addNewItem() {
                     id="mainFile"
                     name="mainFile"
                     type="file"
+                    accept="image/*"
                     multiple={false}
-                    onChange={(event) => {
-                      setFieldValue('mainFile', event.currentTarget.files ? event.currentTarget.files[0] : '');
+                    onChange={async (event) => {
+                      try {
+                        const imageFile = await resizeFile(
+                          event.currentTarget.files ? event.currentTarget.files[0] : '',
+                        );
+                        setFieldValue('mainFile', imageFile);
+                      } catch (error) {
+                        console.log('Error resizing image: ', error.message);
+                      }
                     }}
                     className="form-control"
                     required={true}
@@ -207,10 +252,17 @@ function addNewItem() {
                   <input
                     id="file"
                     name="file"
+                    accept="image/*"
                     type="file"
                     multiple={true}
-                    onChange={(event) => {
-                      setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
+                    onChange={async (event) => {
+                      try {
+                        let fileList = event.target.files ? event.target.files : [];
+                        const imageFiles = await resizeFiles(fileList);
+                        setFieldValue('file', imageFiles);
+                      } catch (error) {
+                        console.log('Error resizing image: ', error.message);
+                      }
                     }}
                     className="form-control"
                     required={false}

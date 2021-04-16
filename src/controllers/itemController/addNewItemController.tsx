@@ -10,7 +10,7 @@ export const addNewItemController = async (
   category: string,
   mainImage: any,
   images: any,
-  adminRating: number,
+  adminRating: string,
 ) => {
   const configFormData = {
     headers: {
@@ -47,7 +47,7 @@ export const addNewItemController = async (
 
   // console.log('Item: ', formData.get('item'));
   // console.log('MainImage: ', formData.get('mainImage'));
-  // console.log('Images: ', formData.get('assets'));
+  console.log('Images: ', formData.get('assets'));
 
   try {
     const res = await axios.post('/admin/items/new', formData, configFormData);

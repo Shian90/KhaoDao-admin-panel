@@ -5,7 +5,7 @@ export interface Item {
   price: number;
   description: string;
   mainImage: string;
-  images: any[];
+  images: any;
   tags: any[];
   numberOfReviews: number;
   visible: boolean;

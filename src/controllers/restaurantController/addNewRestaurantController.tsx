@@ -6,7 +6,7 @@ export const addNewRestaurantController = async (
   images: any,
   name: string,
   address: string,
-  adminRating: number,
+  adminRating: string,
 ) => {
   const configFormData = {
     headers: {

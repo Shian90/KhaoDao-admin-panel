@@ -1,6 +1,7 @@
 import { Button } from '@paljs/ui/Button';
 import { InputGroup } from '@paljs/ui/Input';
 import React from 'react';
+import Resizer from 'react-image-file-resizer';
 
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
@@ -12,6 +13,7 @@ import styled from 'styled-components';
 import Select from '@paljs/ui/Select';
 import { useEffect } from 'react';
 import { Restaurant } from 'Models/Restaurant';
+import style from '../../css/admin.module.css';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -130,6 +132,90 @@ function updateRestaurant() {
     }
   };
 
+  const handleDeleteMainImage = (restaurantId: string) => {
+    let modifiedOptions = new Array();
+
+    console.log('RestaurantId: ', restaurantId);
+    console.log('Options: ', option);
+
+    option.forEach((restaurantOption) => {
+      if (restaurantOption.value == restaurantId) {
+        console.log('restaurantOption Main Image before filering: ', restaurantOption.mainImage);
+        restaurantOption.mainImage = '';
+        console.log('restaurantOption Main Image after filering: ', restaurantOption.mainImage);
+      }
+      modifiedOptions.push(restaurantOption);
+    });
+
+    console.log('modifiedOptions: ', modifiedOptions);
+    setOption(modifiedOptions);
+
+    return true;
+  };
+
+  const handleDeleteImage = (e: any, restaurantId: string) => {
+    e.preventDefault();
+    let modifiedOptions = new Array();
+
+    console.log('restaurantId: ', restaurantId);
+    console.log('Value: ', Number.parseInt(e.target.value));
+    console.log('Options: ', option);
+
+    option.forEach((restaurantOption) => {
+      if (restaurantOption.value == restaurantId) {
+        console.log('restaurantOption Images before filering: ', restaurantOption.images);
+        restaurantOption.images = restaurantOption.images.filter((imageUrl: any, index: number) => {
+          console.log('Fileter index: ', index);
+          return index !== Number.parseInt(e.target.value);
+        });
+        console.log('restaurantOption Images after filering: ', restaurantOption.images);
+      }
+      modifiedOptions.push(restaurantOption);
+    });
+
+    console.log('modifiedOptions: ', modifiedOptions);
+    setOption(modifiedOptions);
+
+    return true;
+  };
+
+  const resizeFile = (file: any) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        1920,
+        1080,
+        'JPEG',
+        10,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        'file',
+      );
+    });
+
+  const resizeFiles = (files: any) => {
+    let uris: any = [];
+    if (files !== []) {
+      for (let i = 0; i < files.length; i++) {
+        Resizer.imageFileResizer(
+          files[i],
+          1920,
+          1080,
+          'JPEG',
+          10,
+          0,
+          (uri) => {
+            uris.push(uri);
+          },
+          'file',
+        );
+      }
+      return uris;
+    } else return [];
+  };
+
   return (
     <Layout title="Update Restaurant">
       <Auth title="Update Restaurant" subTitle="Update a restaurant here Bossmen">
@@ -179,30 +265,105 @@ function updateRestaurant() {
                   error={errors.id}
                   id="id"
                 />
+                <div className={style.formImageDiv}>
+                  <div>
+                    <span id="mainImageLabel"> Main Image: </span>
+                    <input
+                      id="mainFile"
+                      name="mainFile"
+                      accept="image/*"
+                      type="file"
+                      multiple={false}
+                      onChange={async (event) => {
+                        try {
+                          console.log('Selected image: ', event.currentTarget.files[0]);
+                          const imageFile = await resizeFile(
+                            event.currentTarget.files ? event.currentTarget.files[0] : '',
+                          );
+                          console.log('Resized image: ', imageFile);
+                          setFieldValue('updatedMainImage', imageFile);
+                        } catch (error) {
+                          console.log('Error resizing image: ', error.message);
+                        }
+                      }}
+                      className="form-control"
+                      required={false}
+                    />
+                  </div>
+                  {props.values.mainImage !== '' ? (
+                    <div className={style.formImageWithBtnDiv}>
+                      <img src={props.values.mainImage} className={style.formImageStyle} />
+                      <button
+                        className={style.formPicDeleteBtn}
+                        onClick={() => {
+                          if (handleDeleteMainImage(props.values.id.value)) {
+                            option.forEach((restaurantOption) => {
+                              if (restaurantOption.value == props.values.id.value) {
+                                props.values.mainImage = restaurantOption.mainImage;
+                                document.getElementById('mainFile')?.setAttribute('required', 'true');
+                                document.getElementById('mainImageLabel').innerText = 'Main Image(Required): ';
+                              }
+                            });
+                          }
+                        }}
+                      >
+                        {' '}
+                        Delete{' '}
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
 
-                <input
-                  id="mainFile"
-                  name="mainFile"
-                  type="file"
-                  multiple={false}
-                  onChange={(event) => {
-                    setFieldValue('updatedMainImage', event.currentTarget.files ? event.currentTarget.files[0] : []);
-                  }}
-                  className="form-control"
-                  required={false}
-                />
-
-                <input
-                  id="file"
-                  name="file"
-                  type="file"
-                  multiple={true}
-                  onChange={(event) => {
-                    setFieldValue('updatedImages', event.currentTarget.files ? event.currentTarget.files : []);
-                  }}
-                  className="form-control"
-                  required={false}
-                />
+                <div className={style.formImageDiv}>
+                  <div>
+                    <span> Additional Images: </span>
+                    <input
+                      id="file"
+                      name="file"
+                      accept="image/*"
+                      type="file"
+                      multiple={true}
+                      onChange={async (event) => {
+                        try {
+                          console.log('Selected images: ', event.currentTarget.files);
+                          let fileList = event.target.files ? event.target.files : [];
+                          const imageFiles = await resizeFiles(fileList);
+                          console.log('Resized Files: ', imageFiles);
+                          setFieldValue('updatedImages', imageFiles);
+                        } catch (error) {
+                          console.log('Error in resizing image: ', error.message);
+                        }
+                      }}
+                      className="form-control"
+                      required={false}
+                    />
+                  </div>
+                  <div className={style.formImage}>
+                    {props.values.images !== []
+                      ? props.values.images.map((imageUrl, index) => (
+                          <div className={style.formImageWithBtnDiv}>
+                            <img key={index} src={imageUrl} className={style.formImageStyle} />
+                            <button
+                              value={index}
+                              className={style.formPicDeleteBtn}
+                              onClick={(e) => {
+                                if (handleDeleteImage(e, props.values.id.value)) {
+                                  option.forEach((restaurantOption) => {
+                                    if (restaurantOption.value == props.values.id.value) {
+                                      props.values.images = restaurantOption.images;
+                                    }
+                                  });
+                                }
+                              }}
+                            >
+                              {' '}
+                              Delete{' '}
+                            </button>
+                          </div>
+                        ))
+                      : null}
+                  </div>
+                </div>
                 <InputGroup fullWidth>
                   <input
                     id="name"
@@ -237,7 +398,6 @@ function updateRestaurant() {
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                   Update Restaurant
                 </Button>
-                <div>{props.values.name}</div>
               </form>
             );
           }}

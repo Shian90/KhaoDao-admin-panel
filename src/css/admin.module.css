@@ -26,18 +26,63 @@
   align-items: center;
 }
 
+.cardDetailWithImages {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .infos {
   display: flex;
   flex-direction: column;
 }
 
-.cardImageStyle {
+.cardMainImageStyle {
   height: 200px;
   width: 200px;
-  object-fit: contain;
+  object-fit: cover;
   margin-right: 10px;
+}
+
+.cardImageStyle {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  margin-right: 10px;
+  margin-top: 10px;
 }
 
 .description {
   width: 500px;
+}
+
+.formImageDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.formImage {
+  display: flex;
+  flex-direction: row;
+}
+
+.formImageWithBtnDiv {
+  display: flex;
+  flex-direction: column;
+}
+
+.formPicDeleteBtn {
+  background-color: crimson;
+  color: aliceblue;
+  width: 100px;
+  margin-top: 10px;
+}
+
+.formImageStyle {
+  height: 100px;
+  width: 100px;
+  margin-right: 10px;
+  margin-top: 10px;
+  object-fit: contain;
 }

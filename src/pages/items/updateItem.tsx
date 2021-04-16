@@ -14,6 +14,8 @@ import { Restaurant } from 'Models/Restaurant';
 import { Menu } from 'Models/Menu';
 import { Item } from 'Models/Item';
 import { updateItemController } from 'controllers/itemController/updateItemController';
+import style from '../../css/admin.module.css';
+import Resizer from 'react-image-file-resizer';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -144,7 +146,7 @@ function updateItem() {
     return () => {};
   }, []);
 
-  const handleAddItem = async (
+  const handleUpdateItem = async (
     menuId: string,
     name: string,
     price: string,
@@ -214,6 +216,90 @@ function updateItem() {
     }
   };
 
+  const handleDeleteMainImage = (itemId: string) => {
+    let modifiedItemOptions = new Array();
+
+    console.log('ItemId: ', itemId);
+    console.log('ItemOptions: ', itemOptions);
+
+    itemOptions.forEach((itemOption) => {
+      if (itemOption.value == itemId) {
+        console.log('itemOption Main Image before filering: ', itemOption.mainImage);
+        itemOption.mainImage = '';
+        console.log('itemOption Main Image after filering: ', itemOption.mainImage);
+      }
+      modifiedItemOptions.push(itemOption);
+    });
+
+    console.log('ModifieditemOptions: ', modifiedItemOptions);
+    setItemOptions(modifiedItemOptions);
+
+    return true;
+  };
+
+  const handleDeleteImage = (e: any, itemId: string) => {
+    e.preventDefault();
+    let modifiedItemOptions = new Array();
+
+    console.log('ItemId: ', itemId);
+    console.log('Value: ', Number.parseInt(e.target.value));
+    console.log('ItemOptions: ', itemOptions);
+
+    itemOptions.forEach((itemOption) => {
+      if (itemOption.value == itemId) {
+        console.log('itemOption Images before filering: ', itemOption.images);
+        itemOption.images = itemOption.images.filter((imageUrl: any, index: number) => {
+          console.log('Fileter index: ', index);
+          return index !== Number.parseInt(e.target.value);
+        });
+        console.log('itemOption Images after filering: ', itemOption.images);
+      }
+      modifiedItemOptions.push(itemOption);
+    });
+
+    console.log('ModifieditemOptions: ', modifiedItemOptions);
+    setItemOptions(modifiedItemOptions);
+
+    return true;
+  };
+
+  const resizeFile = (file: any) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        1920,
+        1080,
+        'JPEG',
+        10,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        'file',
+      );
+    });
+
+  const resizeFiles = (files: any) => {
+    let uris: any = [];
+    if (files !== []) {
+      for (let i = 0; i < files.length; i++) {
+        Resizer.imageFileResizer(
+          files[i],
+          1920,
+          1080,
+          'JPEG',
+          10,
+          0,
+          (uri) => {
+            uris.push(uri);
+          },
+          'file',
+        );
+      }
+      return uris;
+    } else return [];
+  };
+
   return (
     <Layout title="Update Item">
       <Auth title="Update Item" subTitle="Update item here Bossmen">
@@ -233,7 +319,7 @@ function updateItem() {
             adminRating: '',
           }}
           onSubmit={async (values) => {
-            handleAddItem(
+            handleUpdateItem(
               values.menu.value,
               values.name,
               values.price,
@@ -292,6 +378,7 @@ function updateItem() {
                     setFieldValue('category', item.category);
                     setFieldValue('description', item.description);
                     setFieldValue('price', item.price);
+                    console.log('Set Field Value images: ', item.images);
                     setFieldValue('images', item.images);
                     setFieldValue('mainImage', item.mainImage);
                     setFieldValue('adminRating', item.adminRating);
@@ -302,29 +389,105 @@ function updateItem() {
                   id="item"
                 />
 
-                <input
-                  id="mainFile"
-                  name="mainFile"
-                  type="file"
-                  multiple={false}
-                  onChange={(event) => {
-                    setFieldValue('updatedMainImage', event.currentTarget.files ? event.currentTarget.files[0] : []);
-                  }}
-                  className="form-control"
-                  required={false}
-                />
+                <div className={style.formImageDiv}>
+                  <div>
+                    <span id="mainImageLabel"> Main Image: </span>
+                    <input
+                      id="mainFile"
+                      name="mainFile"
+                      type="file"
+                      accept="image/*"
+                      multiple={false}
+                      onChange={async (event) => {
+                        try {
+                          console.log('Selected image: ', event.currentTarget.files[0]);
+                          const imageFile = await resizeFile(
+                            event.currentTarget.files ? event.currentTarget.files[0] : '',
+                          );
+                          console.log('Resized image: ', imageFile);
+                          setFieldValue('updatedMainImage', imageFile);
+                        } catch (error) {
+                          console.log('Error resizing image: ', error.message);
+                        }
+                      }}
+                      className="form-control"
+                      required={false}
+                    />
+                  </div>
+                  {props.values.mainImage !== '' ? (
+                    <div className={style.formImageWithBtnDiv}>
+                      <img src={props.values.mainImage} className={style.formImageStyle} />
+                      <button
+                        className={style.formPicDeleteBtn}
+                        onClick={() => {
+                          if (handleDeleteMainImage(props.values.item.value)) {
+                            itemOptions.forEach((itemOption) => {
+                              if (itemOption.value == props.values.item.value) {
+                                props.values.mainImage = itemOption.mainImage;
+                                document.getElementById('mainFile')?.setAttribute('required', 'true');
+                                document.getElementById('mainImageLabel').innerText = 'Main Image(Required): ';
+                              }
+                            });
+                          }
+                        }}
+                      >
+                        {' '}
+                        Delete{' '}
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
 
-                <input
-                  id="file"
-                  name="file"
-                  type="file"
-                  multiple={true}
-                  onChange={(event) => {
-                    setFieldValue('updatedImages', event.currentTarget.files ? event.currentTarget.files : []);
-                  }}
-                  className="form-control"
-                  required={false}
-                />
+                <div className={style.formImageDiv}>
+                  <div>
+                    <span> Additional Images: </span>
+                    <input
+                      id="file"
+                      name="file"
+                      accept="image/*"
+                      type="file"
+                      multiple={true}
+                      onChange={async (event) => {
+                        try {
+                          console.log('Selected images: ', event.currentTarget.files);
+                          let fileList = event.target.files ? event.target.files : [];
+                          const imageFiles = await resizeFiles(fileList);
+                          console.log('Resized Files: ', imageFiles);
+                          setFieldValue('updatedImages', imageFiles);
+                        } catch (error) {
+                          console.log('Error in resizing image: ', error.message);
+                        }
+                      }}
+                      className="form-control"
+                      required={false}
+                    />
+                  </div>
+                  <div className={style.formImage}>
+                    {props.values.images !== []
+                      ? props.values.images.map((imageUrl, index) => (
+                          <div className={style.formImageWithBtnDiv}>
+                            <img key={index} src={imageUrl} className={style.formImageStyle} />
+                            <button
+                              value={index}
+                              className={style.formPicDeleteBtn}
+                              onClick={(e) => {
+                                if (handleDeleteImage(e, props.values.item.value)) {
+                                  itemOptions.forEach((itemOption) => {
+                                    if (itemOption.value == props.values.item.value) {
+                                      props.values.images = itemOption.images;
+                                    }
+                                  });
+                                }
+                              }}
+                            >
+                              {' '}
+                              Delete{' '}
+                            </button>
+                          </div>
+                        ))
+                      : null}
+                  </div>
+                </div>
                 <InputGroup fullWidth>
                   <input
                     id="name"

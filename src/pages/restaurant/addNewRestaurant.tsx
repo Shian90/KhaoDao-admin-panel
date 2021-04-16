@@ -1,6 +1,7 @@
 import { Button } from '@paljs/ui/Button';
 import { InputGroup } from '@paljs/ui/Input';
 import React from 'react';
+import Resizer from 'react-image-file-resizer';
 
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
@@ -18,7 +19,7 @@ function addNewRestaurant() {
     images: any,
     name: string,
     address: string,
-    adminRating: number,
+    adminRating: string,
   ) => {
     try {
       setLoading(true);
@@ -41,11 +42,48 @@ function addNewRestaurant() {
     }
   };
 
+  const resizeFile = (file: any) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        1920,
+        1080,
+        'JPEG',
+        10,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        'file',
+      );
+    });
+
+  const resizeFiles = (files: any) => {
+    let uris: any = [];
+    if (files !== []) {
+      for (let i = 0; i < files.length; i++) {
+        Resizer.imageFileResizer(
+          files[i],
+          1920,
+          1080,
+          'JPEG',
+          10,
+          0,
+          (uri) => {
+            uris.push(uri);
+          },
+          'file',
+        );
+      }
+      return uris;
+    } else return [];
+  };
+
   return (
     <Layout title="Add Restaurant">
       <Auth title="Add Restaurant" subTitle="Add a restaurant here Bossmen">
         <Formik
-          initialValues={{ mainFile: '', file: [], name: '', address: '', adminRating: 0 }}
+          initialValues={{ mainFile: '', file: [], name: '', address: '', adminRating: '' }}
           onSubmit={async (values) => {
             handleAddRestaurant(values.mainFile, values.file, values.name, values.address, values.adminRating);
           }}
@@ -58,11 +96,21 @@ function addNewRestaurant() {
                   <span>Main Image(Required): </span>
                   <input
                     id="mainFile"
+                    accept="image/*"
                     name="mainFile"
                     type="file"
                     multiple={false}
-                    onChange={(event) => {
-                      setFieldValue('mainFile', event.currentTarget.files ? event.currentTarget.files[0] : '');
+                    onChange={async (event) => {
+                      try {
+                        console.log('Selected image: ', event.currentTarget.files[0]);
+                        const imageFile = await resizeFile(
+                          event.currentTarget.files ? event.currentTarget.files[0] : '',
+                        );
+                        console.log('Resized image: ', imageFile);
+                        setFieldValue('mainFile', imageFile);
+                      } catch (error) {
+                        console.log('Error resizing image: ', error.message);
+                      }
                     }}
                     className="form-control"
                     required={true}
@@ -74,9 +122,18 @@ function addNewRestaurant() {
                     id="file"
                     name="file"
                     type="file"
+                    accept="image/*"
                     multiple={true}
-                    onChange={(event) => {
-                      setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
+                    onChange={async (event) => {
+                      try {
+                        console.log('Selected images: ', event.currentTarget.files);
+                        let fileList = event.target.files ? event.target.files : [];
+                        const imageFiles = await resizeFiles(fileList);
+                        console.log('Resized Files: ', imageFiles);
+                        setFieldValue('file', imageFiles);
+                      } catch (error) {
+                        console.log('Error in resizing image: ', error.message);
+                      }
                     }}
                     className="form-control"
                     required={false}

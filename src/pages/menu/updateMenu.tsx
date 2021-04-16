@@ -101,7 +101,7 @@ function updateMenu() {
         setErrorMessage('');
         setItem(res.data.menu.name);
         let modifiedMenuOptions = new Array();
-        menuOptions.map((menuOption) => {
+        menuOptions.forEach((menuOption) => {
           if (menuOption.value == res.data.menu._id) {
             menuOption.label = res.data.menu.name;
           }
