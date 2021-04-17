@@ -1,11 +1,8 @@
 import { Button } from '@paljs/ui/Button';
 import { InputGroup } from '@paljs/ui/Input';
-import { Checkbox } from '@paljs/ui/Checkbox';
 import React from 'react';
-import Link from 'next/link';
 
-import Auth, { Group } from 'components/Auth';
-import Socials from 'components/Auth/Socials';
+import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
@@ -18,9 +15,9 @@ export default function Login() {
 
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const onCheckbox = () => {
-    // v will be true or false
-  };
+  // const onCheckbox = () => {
+  //   // v will be true or false
+  // };
 
   useEffect(() => {
     // if(cookies.get("token") == undefined){
