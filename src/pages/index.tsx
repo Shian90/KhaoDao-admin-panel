@@ -5,8 +5,8 @@ import { checkToken } from '../utils/cookies';
 export default function Index() {
   const router = useRouter();
   useEffect(() => {
-    if (checkToken() == false) router.push('/dashboard');
-    else router.push('/dashboard');
+    if (checkToken() == false) router.push('/extra-components/accordion');
+    else router.push('/auth/login');
   }),
     [];
   return <div />;

@@ -7,16 +7,17 @@ import Link from 'next/link';
 import Auth, { Group } from 'components/Auth';
 import Socials from 'components/Auth/Socials';
 import Layout from 'Layouts';
-import axios from '../../../axios/axios';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import { setToken, checkToken } from '../../utils/cookies';
+import { setToken, checkToken, getToken } from '../../utils/cookies';
+import { handleLogin } from 'controllers/authController/loginController';
 
 export default function Login() {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const onCheckbox = () => {
     // v will be true or false
   };
@@ -33,34 +34,29 @@ export default function Login() {
     if (checkToken() == true) {
       router.push('/dashboard');
     } else {
+      router.push('/auth/login');
     }
   }, []);
 
   const handleLoginRequest = async (email: string, password: string) => {
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        //'Access-Control-Allow-Origin':'*',
-      },
-    };
-
-    let bodyFormData = new FormData();
-    bodyFormData.append('email', email);
-    bodyFormData.append('password', password);
-    console.log('clicked');
-
     try {
-      const res = await axios.post('/users/login/staff/', bodyFormData, config);
+      setLoading(true);
+      var res = await handleLogin(email, password);
 
-      if (res.status == 200 && res.data.token !== undefined) {
+      if (res.data.success == true) {
         setToken(res.data.token);
+        console.log('Tokeeeen from get: ', getToken());
+        setErrorMessage('');
+        setLoading(false);
         router.push('/dashboard');
       } else {
-        setErrorMessage('Please enter correct credentials');
+        setErrorMessage(res.data.errMessage);
+        setLoading(false);
       }
-      //console.log(res.data.token);
     } catch (err) {
-      setErrorMessage('Error Connecting to server');
+      console.log('Error: ', err);
+      setLoading(false);
+      setErrorMessage(`Please Provide correct credentials.`);
     }
   };
 
@@ -81,7 +77,6 @@ export default function Login() {
                 //touched,
                 //errors,
                 //dirty,
-                isSubmitting,
                 handleChange,
                 handleBlur,
                 handleSubmit,
@@ -118,7 +113,7 @@ export default function Login() {
                     </Link>
                   </Group>
 
-                  <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={isSubmitting}>
+                  <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                     Login
                   </Button>
                 </form>

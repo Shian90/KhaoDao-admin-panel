@@ -1,0 +1,25 @@
+.mycards {
+  margin-top: 50px;
+}
+
+.cardBody {
+  display: flex;
+  justify-content: space-between;
+}
+
+.invisibleBtn {
+  margin-right: 10px;
+}
+
+.loading {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardDetail {
+  display: flex;
+  flex-direction: column;
+}
