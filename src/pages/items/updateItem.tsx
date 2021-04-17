@@ -249,6 +249,8 @@ function updateItem() {
       if (itemOption.value == itemId) {
         console.log('itemOption Images before filering: ', itemOption.images);
         itemOption.images = itemOption.images.filter((imageUrl: any, index: number) => {
+          console.log(imageUrl);
+
           console.log('Fileter index: ', index);
           return index !== Number.parseInt(e.target.value);
         });
@@ -385,7 +387,7 @@ function updateItem() {
                               if (itemOption.value == props.values.item.value) {
                                 props.values.mainImage = itemOption.mainImage;
                                 document.getElementById('mainFile')?.setAttribute('required', 'true');
-                                document.getElementById('mainImageLabel').innerText = 'Main Image(Required): ';
+                                document.getElementById('mainImageLabel')?.innerText ? 'Main Image(Required): ' : null;
                               }
                             });
                           }

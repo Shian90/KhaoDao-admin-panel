@@ -9,7 +9,7 @@ const resizeFile = (file: any) =>
       'JPEG',
       65,
       0,
-      (uri) => {
+      (uri: any) => {
         resolve(uri);
       },
       'file',
@@ -27,7 +27,7 @@ const resizeFiles = (files: any) => {
         'JPEG',
         65,
         0,
-        (uri) => {
+        (uri: any) => {
           uris.push(uri);
         },
         'file',
