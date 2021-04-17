@@ -104,14 +104,14 @@ export default function Login() {
                       onBlur={handleBlur}
                     />
                   </InputGroup>
-                  <Group>
+                  {/* <Group>
                     <Checkbox checked onChange={onCheckbox}>
                       Remember me
                     </Checkbox>
                     <Link href="/auth/request-password">
                       <a>Forgot Password?</a>
                     </Link>
-                  </Group>
+                  </Group> */}
 
                   <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                     Login
@@ -121,13 +121,13 @@ export default function Login() {
             }}
           </Formik>
           <div style={{ color: 'red' }}>{errorMessage}</div>
-          <Socials />
-          <p>
+          {/* <Socials /> */}
+          {/* <p>
             Don&apos;t have account?{' '}
             <Link href="/auth/register">
               <a>Register</a>
             </Link>
-          </p>
+          </p> */}
         </Auth>
       </Layout>
     );
