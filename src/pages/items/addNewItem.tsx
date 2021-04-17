@@ -1,7 +1,6 @@
 import { Button } from '@paljs/ui/Button';
 import { InputGroup } from '@paljs/ui/Input';
 import React from 'react';
-import Resizer from 'react-image-file-resizer';
 
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
@@ -14,6 +13,7 @@ import { useEffect } from 'react';
 import { Restaurant } from 'Models/Restaurant';
 import { Menu } from 'Models/Menu';
 import { addNewItemController } from 'controllers/itemController/addNewItemController';
+import { resizeFile, resizeFiles } from 'utils/resize';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -131,42 +131,6 @@ function addNewItem() {
     }
   };
 
-  const resizeFile = (file: any) =>
-    new Promise((resolve) => {
-      Resizer.imageFileResizer(
-        file,
-        1920,
-        1080,
-        'JPEG',
-        10,
-        0,
-        (uri) => {
-          resolve(uri);
-        },
-        'file',
-      );
-    });
-
-  const resizeFiles = (files: any) => {
-    let uris: any = [];
-    if (files !== []) {
-      for (let i = 0; i < files.length; i++) {
-        Resizer.imageFileResizer(
-          files[i],
-          1920,
-          1080,
-          'JPEG',
-          10,
-          0,
-          (uri) => {
-            uris.push(uri);
-          },
-          'file',
-        );
-      }
-      return uris;
-    } else return [];
-  };
   return (
     <Layout title="Add New Item">
       <Auth title="Add New Item" subTitle="Add a New Item here Bossmen">

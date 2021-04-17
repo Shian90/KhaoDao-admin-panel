@@ -15,7 +15,7 @@ import { Menu } from 'Models/Menu';
 import { Item } from 'Models/Item';
 import { updateItemController } from 'controllers/itemController/updateItemController';
 import style from '../../css/admin.module.css';
-import Resizer from 'react-image-file-resizer';
+import { resizeFile, resizeFiles } from 'utils/resize';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -263,43 +263,6 @@ function updateItem() {
     return true;
   };
 
-  const resizeFile = (file: any) =>
-    new Promise((resolve) => {
-      Resizer.imageFileResizer(
-        file,
-        1920,
-        1080,
-        'JPEG',
-        10,
-        0,
-        (uri) => {
-          resolve(uri);
-        },
-        'file',
-      );
-    });
-
-  const resizeFiles = (files: any) => {
-    let uris: any = [];
-    if (files !== []) {
-      for (let i = 0; i < files.length; i++) {
-        Resizer.imageFileResizer(
-          files[i],
-          1920,
-          1080,
-          'JPEG',
-          10,
-          0,
-          (uri) => {
-            uris.push(uri);
-          },
-          'file',
-        );
-      }
-      return uris;
-    } else return [];
-  };
-
   return (
     <Layout title="Update Item">
       <Auth title="Update Item" subTitle="Update item here Bossmen">
@@ -378,7 +341,6 @@ function updateItem() {
                     setFieldValue('category', item.category);
                     setFieldValue('description', item.description);
                     setFieldValue('price', item.price);
-                    console.log('Set Field Value images: ', item.images);
                     setFieldValue('images', item.images);
                     setFieldValue('mainImage', item.mainImage);
                     setFieldValue('adminRating', item.adminRating);
@@ -400,11 +362,9 @@ function updateItem() {
                       multiple={false}
                       onChange={async (event) => {
                         try {
-                          console.log('Selected image: ', event.currentTarget.files[0]);
                           const imageFile = await resizeFile(
                             event.currentTarget.files ? event.currentTarget.files[0] : '',
                           );
-                          console.log('Resized image: ', imageFile);
                           setFieldValue('updatedMainImage', imageFile);
                         } catch (error) {
                           console.log('Error resizing image: ', error.message);
@@ -449,10 +409,8 @@ function updateItem() {
                       multiple={true}
                       onChange={async (event) => {
                         try {
-                          console.log('Selected images: ', event.currentTarget.files);
                           let fileList = event.target.files ? event.target.files : [];
                           const imageFiles = await resizeFiles(fileList);
-                          console.log('Resized Files: ', imageFiles);
                           setFieldValue('updatedImages', imageFiles);
                         } catch (error) {
                           console.log('Error in resizing image: ', error.message);

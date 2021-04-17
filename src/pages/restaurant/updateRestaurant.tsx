@@ -1,7 +1,6 @@
 import { Button } from '@paljs/ui/Button';
 import { InputGroup } from '@paljs/ui/Input';
 import React from 'react';
-import Resizer from 'react-image-file-resizer';
 
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
@@ -14,6 +13,7 @@ import Select from '@paljs/ui/Select';
 import { useEffect } from 'react';
 import { Restaurant } from 'Models/Restaurant';
 import style from '../../css/admin.module.css';
+import { resizeFile, resizeFiles } from 'utils/resize';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -179,43 +179,6 @@ function updateRestaurant() {
     return true;
   };
 
-  const resizeFile = (file: any) =>
-    new Promise((resolve) => {
-      Resizer.imageFileResizer(
-        file,
-        1920,
-        1080,
-        'JPEG',
-        10,
-        0,
-        (uri) => {
-          resolve(uri);
-        },
-        'file',
-      );
-    });
-
-  const resizeFiles = (files: any) => {
-    let uris: any = [];
-    if (files !== []) {
-      for (let i = 0; i < files.length; i++) {
-        Resizer.imageFileResizer(
-          files[i],
-          1920,
-          1080,
-          'JPEG',
-          10,
-          0,
-          (uri) => {
-            uris.push(uri);
-          },
-          'file',
-        );
-      }
-      return uris;
-    } else return [];
-  };
-
   return (
     <Layout title="Update Restaurant">
       <Auth title="Update Restaurant" subTitle="Update a restaurant here Bossmen">
@@ -276,7 +239,6 @@ function updateRestaurant() {
                       multiple={false}
                       onChange={async (event) => {
                         try {
-                          console.log('Selected image: ', event.currentTarget.files[0]);
                           const imageFile = await resizeFile(
                             event.currentTarget.files ? event.currentTarget.files[0] : '',
                           );
