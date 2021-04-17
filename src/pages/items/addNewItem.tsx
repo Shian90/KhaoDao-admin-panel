@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import { Restaurant } from 'Models/Restaurant';
 import { Menu } from 'Models/Menu';
 import { addNewItemController } from 'controllers/itemController/addNewItemController';
+import { resizeFile, resizeFiles } from 'utils/resize';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -24,7 +25,6 @@ class SelectRestaurantItem {
   restaurantAddress: string;
 
   constructor(restaurantId: string, restaurantName: string, restaurantAddress: string) {
-    //console.log(v);
     this.label = restaurantName;
     this.value = restaurantId;
     this.restaurantAddress = restaurantAddress;
@@ -37,7 +37,6 @@ class SelectMenuItem {
   restaurantId: string;
 
   constructor(menuId: string, menuName: string, restaurantId: string) {
-    //console.log(v);
     this.label = menuName;
     this.value = menuId;
     this.restaurantId = restaurantId;
@@ -57,13 +56,8 @@ function addNewItem() {
   useEffect(() => {
     getAllRestaurantsController()
       .then((res) => {
-        console.log('Could?');
         if (res.data.success == true) {
-          console.log('Could');
           res.data.restaurants.map((restaurant: Restaurant) => {
-            //console.log(option);
-            //console.log(v._id);
-
             setRestaurantOptions((restaurantOptions) => [
               ...restaurantOptions,
               {
@@ -84,13 +78,12 @@ function addNewItem() {
             });
           });
         } else {
-          console.log('Could not');
           setLoading(false);
         }
       })
       .catch((err) => {
-        console.log('Error: ', err);
         setLoading(false);
+        console.log('Error: ', err);
         //setError(`Internal Server Error.`);
       });
     return () => {};
@@ -105,11 +98,21 @@ function addNewItem() {
     category: string,
     mainImage: any,
     images: any,
-    // review: string,
+    adminRating: string,
   ) => {
     try {
       setLoading(true);
-      const res = await addNewItemController(menuId, name, price, description, sellerId, category, mainImage, images);
+      const res = await addNewItemController(
+        menuId,
+        name,
+        price,
+        description,
+        sellerId,
+        category,
+        mainImage,
+        images,
+        adminRating,
+      );
 
       if (res.data.success == true) {
         setErrorMessage('');
@@ -141,7 +144,7 @@ function addNewItem() {
             category: '',
             file: [],
             mainFile: '',
-            // review: '',
+            adminRating: '',
           }}
           onSubmit={async (values) => {
             handleAddItem(
@@ -153,7 +156,7 @@ function addNewItem() {
               values.category,
               values.mainFile,
               values.file,
-              // values.review,
+              values.adminRating,
             );
           }}
         >
@@ -167,7 +170,6 @@ function addNewItem() {
                   value={values.seller}
                   onChange={(restaurant: SelectRestaurantItem) => {
                     setFieldValue('seller', restaurant);
-                    console.log('Seller name: ', values.seller.label, ' ', values.seller.value);
                   }}
                   onBlur={handleBlur}
                   touched={touched.seller}
@@ -193,10 +195,17 @@ function addNewItem() {
                     id="mainFile"
                     name="mainFile"
                     type="file"
+                    accept="image/*"
                     multiple={false}
-                    onChange={(event) => {
-                      setFieldValue('mainFile', event.currentTarget.files ? event.currentTarget.files[0] : '');
-                      console.log('MainFilee: ', event.currentTarget.files[0]);
+                    onChange={async (event) => {
+                      try {
+                        const imageFile = await resizeFile(
+                          event.currentTarget.files ? event.currentTarget.files[0] : '',
+                        );
+                        setFieldValue('mainFile', imageFile);
+                      } catch (error) {
+                        console.log('Error resizing image: ', error.message);
+                      }
                     }}
                     className="form-control"
                     required={true}
@@ -207,11 +216,17 @@ function addNewItem() {
                   <input
                     id="file"
                     name="file"
+                    accept="image/*"
                     type="file"
                     multiple={true}
-                    onChange={(event) => {
-                      setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
-                      console.log('Filee: ', event.currentTarget.files);
+                    onChange={async (event) => {
+                      try {
+                        let fileList = event.target.files ? event.target.files : [];
+                        const imageFiles = await resizeFiles(fileList);
+                        setFieldValue('file', imageFiles);
+                      } catch (error) {
+                        console.log('Error resizing image: ', error.message);
+                      }
                     }}
                     className="form-control"
                     required={false}
@@ -258,16 +273,16 @@ function addNewItem() {
                   />
                 </InputGroup>
 
-                {/* <InputGroup fullWidth>
+                <InputGroup fullWidth>
                   <input
-                    id="review"
-                    type="review"
-                    placeholder="Review of Item"
-                    value={values.review}
+                    id="adminRating"
+                    type="adminRating"
+                    placeholder="AdminRating of Item"
+                    value={values.adminRating}
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                </InputGroup> */}
+                </InputGroup>
 
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                   Add Item Brosa

@@ -64,6 +64,7 @@ function getAllItems() {
                 menuName={item.menu.name}
                 description={item.description}
                 imageUrl={item.mainImage}
+                additionalImages={item.images}
                 onInvisibleClick={() => makeInvisible(item._id)}
                 onLoading={invisibleBtnDisable}
               />

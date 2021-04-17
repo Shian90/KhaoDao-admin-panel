@@ -14,6 +14,8 @@ import { Restaurant } from 'Models/Restaurant';
 import { Menu } from 'Models/Menu';
 import { Item } from 'Models/Item';
 import { updateItemController } from 'controllers/itemController/updateItemController';
+import style from '../../css/admin.module.css';
+import { resizeFile, resizeFiles } from 'utils/resize';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -25,7 +27,6 @@ class SelectRestaurantItem {
   restaurantAddress: string;
 
   constructor(restaurantId: string, restaurantName: string, restaurantAddress: string) {
-    //console.log(v);
     this.label = restaurantName;
     this.value = restaurantId;
     this.restaurantAddress = restaurantAddress;
@@ -38,7 +39,6 @@ class SelectMenuItem {
   restaurantId: string;
 
   constructor(menuId: string, menuName: string, restaurantId: string) {
-    //console.log(v);
     this.label = menuName;
     this.value = menuId;
     this.restaurantId = restaurantId;
@@ -53,6 +53,8 @@ class SelectItem {
   menuId: string;
   price: number;
   images: any;
+  adminRating: number;
+  mainImage: any;
 
   constructor(
     itemId: string,
@@ -63,8 +65,9 @@ class SelectItem {
     description: string,
     price: number,
     images: any,
+    adminRating: number,
+    mainImage: any,
   ) {
-    //console.log(v);
     this.label = itemName;
     this.value = itemId;
     this.restaurantId = restaurantId;
@@ -73,6 +76,8 @@ class SelectItem {
     this.description = description;
     this.price = price;
     this.images = images;
+    this.adminRating = adminRating;
+    this.mainImage = mainImage;
   }
 }
 
@@ -91,13 +96,8 @@ function updateItem() {
   useEffect(() => {
     getAllRestaurantsController()
       .then((res) => {
-        console.log('Could?');
         if (res.data.success == true) {
-          console.log('Could');
           res.data.restaurants.map((restaurant: Restaurant) => {
-            //console.log(option);
-            //console.log(v._id);
-
             setRestaurantOptions((restaurantOptions) => [
               ...restaurantOptions,
               {
@@ -127,13 +127,14 @@ function updateItem() {
                     menuId: menu._id,
                     price: item.price,
                     images: item.images,
+                    adminRating: item.adminRating,
+                    mainImage: item.mainImage,
                   },
                 ]);
               });
             });
           });
         } else {
-          console.log('Could not');
           setLoading(false);
         }
       })
@@ -145,7 +146,7 @@ function updateItem() {
     return () => {};
   }, []);
 
-  const handleAddItem = async (
+  const handleUpdateItem = async (
     menuId: string,
     name: string,
     price: string,
@@ -154,14 +155,53 @@ function updateItem() {
     category: string,
     itemId: string,
     images: any,
+    adminRating: string,
+    mainImage: string,
+    updatedMainImage: any,
+    updatedImages: any,
   ) => {
     try {
+      await itemOptions.forEach((itemOption) => {
+        if (itemOption.value == itemId) {
+          mainImage = itemOption.mainImage;
+          images = itemOption.images;
+        }
+      });
+
       setLoading(true);
-      const res = await updateItemController(menuId, name, price, description, sellerId, category, itemId, images);
+      const res = await updateItemController(
+        menuId,
+        name,
+        price,
+        description,
+        sellerId,
+        category,
+        itemId,
+        images,
+        adminRating,
+        mainImage,
+        updatedMainImage,
+        updatedImages,
+      );
 
       if (res.data.success == true) {
         setErrorMessage('');
         setItem(res.data.item.name);
+
+        let modifiedItemOptions = new Array();
+        itemOptions.forEach((itemOption) => {
+          if (itemOption.value == res.data.item._id) {
+            itemOption.label = res.data.item.name;
+            itemOption.category = res.data.item.category;
+            itemOption.description = res.data.item.description;
+            itemOption.price = res.data.item.price;
+            itemOption.adminRating = res.data.item.adminRating;
+            itemOption.mainImage = res.data.item.mainImage;
+            itemOption.images = res.data.item.images;
+          }
+          modifiedItemOptions.push(itemOption);
+        });
+        setItemOptions(modifiedItemOptions);
         setLoading(false);
       } else {
         setItem('');
@@ -176,6 +216,53 @@ function updateItem() {
     }
   };
 
+  const handleDeleteMainImage = (itemId: string) => {
+    let modifiedItemOptions = new Array();
+
+    console.log('ItemId: ', itemId);
+    console.log('ItemOptions: ', itemOptions);
+
+    itemOptions.forEach((itemOption) => {
+      if (itemOption.value == itemId) {
+        console.log('itemOption Main Image before filering: ', itemOption.mainImage);
+        itemOption.mainImage = '';
+        console.log('itemOption Main Image after filering: ', itemOption.mainImage);
+      }
+      modifiedItemOptions.push(itemOption);
+    });
+
+    console.log('ModifieditemOptions: ', modifiedItemOptions);
+    setItemOptions(modifiedItemOptions);
+
+    return true;
+  };
+
+  const handleDeleteImage = (e: any, itemId: string) => {
+    e.preventDefault();
+    let modifiedItemOptions = new Array();
+
+    console.log('ItemId: ', itemId);
+    console.log('Value: ', Number.parseInt(e.target.value));
+    console.log('ItemOptions: ', itemOptions);
+
+    itemOptions.forEach((itemOption) => {
+      if (itemOption.value == itemId) {
+        console.log('itemOption Images before filering: ', itemOption.images);
+        itemOption.images = itemOption.images.filter((imageUrl: any, index: number) => {
+          console.log('Fileter index: ', index);
+          return index !== Number.parseInt(e.target.value);
+        });
+        console.log('itemOption Images after filering: ', itemOption.images);
+      }
+      modifiedItemOptions.push(itemOption);
+    });
+
+    console.log('ModifieditemOptions: ', modifiedItemOptions);
+    setItemOptions(modifiedItemOptions);
+
+    return true;
+  };
+
   return (
     <Layout title="Update Item">
       <Auth title="Update Item" subTitle="Update item here Bossmen">
@@ -186,12 +273,16 @@ function updateItem() {
             description: '',
             seller: new SelectRestaurantItem('', 'Select a restaurant', ''),
             menu: new SelectMenuItem('', 'Select a menu', ''),
-            item: new SelectItem('', 'Select an item', '', '', '', '', 0, []),
+            item: new SelectItem('', 'Select an item', '', '', '', '', 0, [], 0, ''),
             category: '',
-            files: [],
+            images: [],
+            mainImage: '',
+            updatedImages: undefined,
+            updatedMainImage: undefined,
+            adminRating: '',
           }}
           onSubmit={async (values) => {
-            handleAddItem(
+            handleUpdateItem(
               values.menu.value,
               values.name,
               values.price,
@@ -199,7 +290,11 @@ function updateItem() {
               values.seller.value,
               values.category,
               values.item.value,
-              values.files,
+              values.images,
+              values.adminRating,
+              values.mainImage,
+              values.updatedMainImage,
+              values.updatedImages,
             );
           }}
         >
@@ -244,10 +339,11 @@ function updateItem() {
                     setFieldValue('item', item);
                     setFieldValue('name', item.label);
                     setFieldValue('category', item.category);
-                    console.log('item price: ', item.price);
                     setFieldValue('description', item.description);
                     setFieldValue('price', item.price);
-                    setFieldValue('files', item.images);
+                    setFieldValue('images', item.images);
+                    setFieldValue('mainImage', item.mainImage);
+                    setFieldValue('adminRating', item.adminRating);
                   }}
                   onBlur={handleBlur}
                   touched={touched.item}
@@ -255,18 +351,101 @@ function updateItem() {
                   id="item"
                 />
 
-                {/* <input
-                  id="file"
-                  name="file"
-                  type="file"
-                  onChange={(event) => {
-                    setFieldValue('file', event.currentTarget.files ? event.currentTarget.files : []);
-                    console.log('Filee: ', event.currentTarget.files[0]);
+                <div className={style.formImageDiv}>
+                  <div>
+                    <span id="mainImageLabel"> Main Image: </span>
+                    <input
+                      id="mainFile"
+                      name="mainFile"
+                      type="file"
+                      accept="image/*"
+                      multiple={false}
+                      onChange={async (event) => {
+                        try {
+                          const imageFile = await resizeFile(
+                            event.currentTarget.files ? event.currentTarget.files[0] : '',
+                          );
+                          setFieldValue('updatedMainImage', imageFile);
+                        } catch (error) {
+                          console.log('Error resizing image: ', error.message);
+                        }
+                      }}
+                      className="form-control"
+                      required={false}
+                    />
+                  </div>
+                  {props.values.mainImage !== '' ? (
+                    <div className={style.formImageWithBtnDiv}>
+                      <img src={props.values.mainImage} className={style.formImageStyle} />
+                      <button
+                        className={style.formPicDeleteBtn}
+                        onClick={() => {
+                          if (handleDeleteMainImage(props.values.item.value)) {
+                            itemOptions.forEach((itemOption) => {
+                              if (itemOption.value == props.values.item.value) {
+                                props.values.mainImage = itemOption.mainImage;
+                                document.getElementById('mainFile')?.setAttribute('required', 'true');
+                                document.getElementById('mainImageLabel').innerText = 'Main Image(Required): ';
+                              }
+                            });
+                          }
+                        }}
+                      >
+                        {' '}
+                        Delete{' '}
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
 
-                  }}
-                  className="form-control"
-                  required={false}
-                /> */}
+                <div className={style.formImageDiv}>
+                  <div>
+                    <span> Additional Images: </span>
+                    <input
+                      id="file"
+                      name="file"
+                      accept="image/*"
+                      type="file"
+                      multiple={true}
+                      onChange={async (event) => {
+                        try {
+                          let fileList = event.target.files ? event.target.files : [];
+                          const imageFiles = await resizeFiles(fileList);
+                          setFieldValue('updatedImages', imageFiles);
+                        } catch (error) {
+                          console.log('Error in resizing image: ', error.message);
+                        }
+                      }}
+                      className="form-control"
+                      required={false}
+                    />
+                  </div>
+                  <div className={style.formImage}>
+                    {props.values.images !== []
+                      ? props.values.images.map((imageUrl, index) => (
+                          <div className={style.formImageWithBtnDiv}>
+                            <img key={index} src={imageUrl} className={style.formImageStyle} />
+                            <button
+                              value={index}
+                              className={style.formPicDeleteBtn}
+                              onClick={(e) => {
+                                if (handleDeleteImage(e, props.values.item.value)) {
+                                  itemOptions.forEach((itemOption) => {
+                                    if (itemOption.value == props.values.item.value) {
+                                      props.values.images = itemOption.images;
+                                    }
+                                  });
+                                }
+                              }}
+                            >
+                              {' '}
+                              Delete{' '}
+                            </button>
+                          </div>
+                        ))
+                      : null}
+                  </div>
+                </div>
                 <InputGroup fullWidth>
                   <input
                     id="name"
@@ -303,6 +482,17 @@ function updateItem() {
                     type="description"
                     placeholder="Description of Item"
                     value={values.description}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </InputGroup>
+
+                <InputGroup fullWidth>
+                  <input
+                    id="adminRating"
+                    type="adminRating"
+                    placeholder="AdminRating of Item"
+                    value={values.adminRating}
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
