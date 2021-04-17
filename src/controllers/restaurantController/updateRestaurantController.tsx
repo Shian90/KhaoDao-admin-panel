@@ -11,11 +11,11 @@ export const updateRestaurantController = async (
   updatedMainImage: any,
   updatedImages: any,
 ) => {
-  const config = {
-    headers: {
-      Authorization: `${getToken()}`,
-    },
-  };
+  // const config = {
+  //   headers: {
+  //     Authorization: `${getToken()}`,
+  //   },
+  // };
 
   const configFormData = {
     headers: {

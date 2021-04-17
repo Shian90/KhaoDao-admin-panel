@@ -165,6 +165,7 @@ function updateRestaurant() {
       if (restaurantOption.value == restaurantId) {
         console.log('restaurantOption Images before filering: ', restaurantOption.images);
         restaurantOption.images = restaurantOption.images.filter((imageUrl: any, index: number) => {
+          console.log(imageUrl);
           console.log('Fileter index: ', index);
           return index !== Number.parseInt(e.target.value);
         });
@@ -263,7 +264,7 @@ function updateRestaurant() {
                               if (restaurantOption.value == props.values.id.value) {
                                 props.values.mainImage = restaurantOption.mainImage;
                                 document.getElementById('mainFile')?.setAttribute('required', 'true');
-                                document.getElementById('mainImageLabel').innerText = 'Main Image(Required): ';
+                                document.getElementById('mainImageLabel')?.innerText ? 'Main Image(Required): ' : null;
                               }
                             });
                           }
