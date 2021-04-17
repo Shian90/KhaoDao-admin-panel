@@ -9,6 +9,7 @@ import { GetStaticProps } from 'next';
 import { checkToken } from '../../utils/cookies';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+//import { getAllZones, createZoneFormData, postZone, updateZone, deleteZone } from 'networking/zones';
 
 const Accordions = () => {
   const accordionRef = useRef<AccordionRefObject>(null);
@@ -24,6 +25,23 @@ const Accordions = () => {
     if (checkToken() == false) {
       getAuth();
     } else {
+      // const formData = createZoneFormData(
+      //   'tes4',
+      //   '23.33,32.3223',
+      //   '23.33,32.3223',
+      //   '23.33,32.3223',
+      //   '23.33,32.3223',
+      //   '23.33,32.3223',
+      //   '23.33,32.3223',
+      //   '23.33,32.3223',
+      //   '23.33,32.3223',
+      // );
+      // postZone('ba254e9f8bb8072c0fdcb9c58382317408668c7b', formData).then((value) => {
+      //   console.log(value);
+      // });
+      // deleteZone('ba254e9f8bb8072c0fdcb9c58382317408668c7b',5).then((value) => {
+      //   console.log(value);
+      // });
     }
     return () => {};
   }, []);

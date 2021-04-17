@@ -1,4 +1,4 @@
-import { Button, ButtonLink } from '@paljs/ui/Button';
+import { Button } from '@paljs/ui/Button';
 import { Card, CardBody, CardHeader } from '@paljs/ui/Card';
 import React from 'react';
 import style from '../../css/admin.module.css';
@@ -9,8 +9,8 @@ function MyCard({
   restaurantName = '',
   subtitle = '',
   menuName = '',
-  onInvisibleClick,
-  onLoading,
+  onInvisibleClick = () => {},
+  onLoading = false,
   address = '',
   imageUrl = '',
   additionalImages = [],

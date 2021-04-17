@@ -18,11 +18,11 @@ export const addNewItemController = async (
       'Content-Type': 'multipart/form-data',
     },
   };
-  const config = {
-    headers: {
-      Authorization: `${getToken()}`,
-    },
-  };
+  // const config = {
+  //   headers: {
+  //     Authorization: `${getToken()}`,
+  //   },
+  // };
 
   // console.log('Tokeeen: ', getToken());
 

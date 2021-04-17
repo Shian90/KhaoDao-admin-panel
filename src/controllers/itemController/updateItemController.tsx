@@ -15,11 +15,13 @@ export const updateItemController = async (
   updatedMainImage: any,
   updatedImages: any,
 ) => {
-  const config = {
-    headers: {
-      Authorization: `${getToken()}`,
-    },
-  };
+  // const config = {
+  //   headers: {
+  //     Authorization: `${getToken()}`,
+  //   },
+  // };
+
+  console.log(menuId);
 
   const configFormData = {
     headers: {

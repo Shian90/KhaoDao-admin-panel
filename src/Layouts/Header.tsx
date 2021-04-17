@@ -115,7 +115,7 @@ const Header: React.FC<HeaderProps> = (props) => {
             {
               content: (
                 <Link href="/">
-                  <a className="logo">Admin Template</a>
+                  <a className="logo">DeliverBae</a>
                 </Link>
               ),
             },
@@ -149,29 +149,29 @@ const Header: React.FC<HeaderProps> = (props) => {
               content: (
                 <a
                   className="left"
-                  href={`https://github.com/paljs/nextjs-admin-template`}
+                  //href={`https://github.com/paljs/nextjs-admin-template`}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <span className="github">Support us in GitHub</span>
-                  <img src={`https://badgen.net/github/stars/paljs/nextjs-admin-template`} />
+                  <span className="github">DeliverBae Admin Panel</span>
+                  {/* <img src={`https://badgen.net/github/stars/paljs/nextjs-admin-template`} /> */}
                 </a>
               ),
             },
             {
               content: (
                 <a
-                  href="https://join.slack.com/t/paljs/shared_invite/zt-ju5j9bb9-onkc9ZksqPZq~yIYJ3BfKw"
+                  //href="https://join.slack.com/t/paljs/shared_invite/zt-ju5j9bb9-onkc9ZksqPZq~yIYJ3BfKw"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <img height="20" src="/slack.svg" alt="slack" />
+                  {/* <img height="20" src="/slack.svg" alt="slack" /> */}
                 </a>
               ),
             },
             {
-              icon: 'twitter',
-              url: { href: 'https://twitter.com/AhmedElywh', target: '_blank' },
+              // icon: 'twitter',
+              // url: { href: 'https://twitter.com/AhmedElywh', target: '_blank' },
             },
             {
               content: (
@@ -181,7 +181,7 @@ const Header: React.FC<HeaderProps> = (props) => {
                   placement="bottom"
                   currentPath={router.pathname}
                   items={[
-                    { title: 'Profile', link: { href: '/modal-overlays/tooltip' } },
+                    { title: 'Profile', link: { href: '/dashboard' } },
                     { title: 'Log out', link: { href: '/auth/logout' } },
                   ]}
                   Link={Link}
