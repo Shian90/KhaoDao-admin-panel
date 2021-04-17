@@ -208,6 +208,10 @@ const items: MenuItemType[] = [
         title: 'Update Item',
         link: { href: '/items/updateItem' },
       },
+      // {
+      //   title: 'Upload Images',
+      //   link: { href: '/items/uploadimage' },
+      // },
     ],
   },
 ];

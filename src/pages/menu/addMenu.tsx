@@ -5,7 +5,6 @@ import React from 'react';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { Formik } from 'formik';
-//import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { addNewMenuController } from '../../controllers/menuController/menuController';
 import { useEffect } from 'react';
@@ -19,26 +18,12 @@ export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
 `;
 
-// function restaurantIdToRestaurantAdapter(id: string, array : Array<Restaurant>): Restaurant {
-//    var restaurant = new Object() as Restaurant
-
-//    array.forEach((res) => {
-//     if (res.id === id) {
-//       //console.log(res.name);
-//       restaurant = res;
-//     }
-//   });
-
-//     return restaurant;
-// }
-
 class SelectItem {
   value: string;
   label: string;
   address: string;
 
   constructor(v: string, l: string, a: string) {
-    //console.log(v);
     this.value = v;
     this.label = l;
     this.address = a;
@@ -78,12 +63,8 @@ function addNewMenu() {
   useEffect(() => {
     getAllRestaurantsController()
       .then((res) => {
-        console.log('Could?');
         if (res.data.success == true) {
-          console.log('Could');
           res.data.restaurants.map((v: Restaurant) => {
-            //console.log(option);
-            //console.log(v._id);
             setOption((option) => [
               ...option,
               {
@@ -93,10 +74,8 @@ function addNewMenu() {
               },
             ]);
           });
-          //console.log(option);
           setRestaurant(res.data.restaurant);
         } else {
-          console.log('Could not');
           setLoading(false);
         }
       })
@@ -129,8 +108,6 @@ function addNewMenu() {
                   onChange={(value: SelectItem) => {
                     setFieldValue('id', value.value);
                     //const tag = restaurantIdToRestaurantAdapter(value.value, tags);
-                    //console.log(zone);
-                    //console.log(value.value);
                     setFieldValue('restaurant', value);
                     //setFieldValue('address', value.address);
                   }}

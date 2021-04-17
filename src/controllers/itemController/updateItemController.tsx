@@ -9,13 +9,26 @@ export const updateItemController = async (
   sellerId: string,
   category: string,
   itemId: string,
+  images: any,
+  adminRating: string,
+  mainImage: string,
+  updatedMainImage: any,
+  updatedImages: any,
 ) => {
   const config = {
     headers: {
       Authorization: `${getToken()}`,
     },
   };
-  console.log('Tokeeen: ', getToken());
+
+  const configFormData = {
+    headers: {
+      Authorization: `${getToken()}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
+  // console.log('Tokeeen: ', getToken());
 
   const reqBody = {
     name: name,
@@ -23,15 +36,31 @@ export const updateItemController = async (
     description: description,
     seller: sellerId,
     category: category,
-    images: [
-      'https://pakwired.com/wp-content/uploads/2017/09/pizza-1.jpg',
-      'https://pakwired.com/wp-content/uploads/2017/09/pizza-1.jpg',
-    ],
+    images: images,
+    adminRating: adminRating,
+    mainImage: mainImage,
   };
 
-  console.log('Req body: ', reqBody.name);
+  const formData = new FormData();
+  formData.append('item', JSON.stringify(reqBody));
+  formData.append('mainImage', updatedMainImage);
+
+  if (updatedImages !== undefined) {
+    for (let i = 0; i < updatedImages.length; i++) {
+      formData.append('assets', updatedImages[i]);
+    }
+  } else {
+    formData.append('assets', updatedImages);
+  }
+
+  // console.log('Item: ', formData.get('item'));
+  // console.log('MainImage: ', formData.get('mainImage'));
+  // console.log('Images: ', formData.get('assets'));
+
+  // console.log('Req body: ', reqBody);
+
   try {
-    const res = await axios.put(`/admin/item/${itemId}`, reqBody, config);
+    const res = await axios.put(`/admin/item/${itemId}`, formData, configFormData);
     console.log('update data: ', res.data);
     return res;
   } catch (err) {

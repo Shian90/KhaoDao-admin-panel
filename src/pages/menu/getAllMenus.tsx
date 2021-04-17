@@ -4,14 +4,13 @@ import { getAllMenusController } from 'controllers/menuController/menuController
 import React, { useEffect, useState } from 'react';
 import style from '../../css/admin.module.css';
 import { Menu } from 'Models/Menu';
-//import { makeRestaurantInvisibleController } from 'controllers/restaurantController/makeRestaurantInvisible';
 import { makeMenuInvisibleController } from 'controllers/menuController/menuController';
-import { getRestaurantByIdController } from 'controllers/restaurantController/getRestaurantById';
 
 function getAllMenus() {
   const emptyRes = new Array<string>();
   const [menus, setMenus] = useState([]);
   const [restaurant, setRestaurant] = useState(emptyRes);
+  const [restaurantAddress, setRestaurantAddress] = useState(emptyRes);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [invisibleBtnDisable, setInvisibleBtnDisable] = useState(false);
@@ -23,16 +22,14 @@ function getAllMenus() {
         if (res.data.success == true) {
           setError('');
           setMenus(res.data.menus);
-          //console.log(menus);
           res.data.menus.map((menu: Menu) => {
             // getRestaurantNameFromId(menu.restaurant)
             //   .then((value) => setRestaurant((restaurant) => [...restaurant, value]))
             //   .catch((err) => console.log(err));
 
             setRestaurant((restaurant) => [...restaurant, menu.restaurant.name]);
+            setRestaurantAddress((restaurantAddress) => [...restaurantAddress, menu.restaurant.address]);
           });
-          //setRestaurant(rest);
-          console.log(restaurant);
           setLoading(false);
         } else {
           setMenus([]);
@@ -66,19 +63,19 @@ function getAllMenus() {
       });
   };
 
-  const getRestaurantNameFromId = async (id: string): Promise<string> => {
-    try {
-      const res = await getRestaurantByIdController(id);
-      if (res.data.success == true) {
-        return res.data.restaurant[0].name;
-      } else {
-        return 'Name not found';
-      }
-    } catch (err) {
-      console.log(err);
-      return 'Name not found';
-    }
-  };
+  // const getRestaurantNameFromId = async (id: string): Promise<string> => {
+  //   try {
+  //     const res = await getRestaurantByIdController(id);
+  //     if (res.data.success == true) {
+  //       return res.data.restaurant[0].name;
+  //     } else {
+  //       return 'Name not found';
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //     return 'Name not found';
+  //   }
+  // };
 
   return (
     <Layout title="All restaurants">
@@ -89,6 +86,7 @@ function getAllMenus() {
               <MyCard
                 title={menu.name}
                 restaurantName={restaurant[index] ? restaurant[index] : 'Loading...'}
+                address={restaurantAddress[index] ? restaurantAddress[index] : 'Loading...'}
                 onInvisibleClick={() => makeInvisible(menu._id)}
                 onLoading={invisibleBtnDisable}
               />

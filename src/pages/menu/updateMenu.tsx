@@ -5,18 +5,13 @@ import React from 'react';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { Formik } from 'formik';
-//import { useRouter } from 'next/router';
 import { useState } from 'react';
-//import { addNewRestaurantController } from '../../controllers/restaurantController/addNewRestaurantController';
 import { getAllRestaurantsController } from 'controllers/restaurantController/getAllRestaurantsController';
 import styled from 'styled-components';
-//import { DisplayFormikState } from 'utils/formikHelper';
 import Select from '@paljs/ui/Select';
 import { useEffect } from 'react';
 import { Restaurant } from 'Models/Restaurant';
 import { Menu } from 'Models/Menu';
-//import { Item } from 'Models/Item';
-//import { updateItemController } from 'controllers/itemController/updateItemController';
 import { updateMenuController } from 'controllers/menuController/menuController';
 
 export const SelectStyled = styled(Select)`
@@ -29,7 +24,6 @@ class SelectRestaurantItem {
   restaurantAddress: string;
 
   constructor(restaurantId: string, restaurantName: string, restaurantAddress: string) {
-    //console.log(v);
     this.label = restaurantName;
     this.value = restaurantId;
     this.restaurantAddress = restaurantAddress;
@@ -42,7 +36,6 @@ class SelectMenuItem {
   restaurantId: string;
 
   constructor(menuId: string, menuName: string, restaurantId: string) {
-    //console.log(v);
     this.label = menuName;
     this.value = menuId;
     this.restaurantId = restaurantId;
@@ -62,9 +55,7 @@ function updateMenu() {
   useEffect(() => {
     getAllRestaurantsController()
       .then((res) => {
-        console.log('Could?');
         if (res.data.success == true) {
-          console.log('Could');
           res.data.restaurants.map((restaurant: Restaurant) => {
             setRestaurantOptions((restaurantOptions) => [
               ...restaurantOptions,
@@ -86,7 +77,6 @@ function updateMenu() {
             });
           });
         } else {
-          console.log('Could not');
           setLoading(false);
         }
       })
@@ -110,6 +100,14 @@ function updateMenu() {
       if (res.data.success == true) {
         setErrorMessage('');
         setItem(res.data.menu.name);
+        let modifiedMenuOptions = new Array();
+        menuOptions.forEach((menuOption) => {
+          if (menuOption.value == res.data.menu._id) {
+            menuOption.label = res.data.menu.name;
+          }
+          modifiedMenuOptions.push(menuOption);
+        });
+        setMenuOptions(modifiedMenuOptions);
         setLoading(false);
       } else {
         setItem('');
@@ -125,8 +123,8 @@ function updateMenu() {
   };
 
   return (
-    <Layout title="Update Item">
-      <Auth title="Update Item" subTitle="Update item here Bossmen">
+    <Layout title="Update Menu">
+      <Auth title="Update Menu" subTitle="Update menu here Bossmen">
         <Formik
           initialValues={{
             name: '',
@@ -183,7 +181,7 @@ function updateMenu() {
                 </InputGroup>
 
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
-                  Update Item Brother
+                  Update Menu Brother
                 </Button>
               </form>
             );

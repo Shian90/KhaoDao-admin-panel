@@ -5,21 +5,25 @@ import React from 'react';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { Formik } from 'formik';
-//import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { addNewRestaurantController } from '../../controllers/restaurantController/addNewRestaurantController';
+import { resizeFile, resizeFiles } from 'utils/resize';
 
 function addNewRestaurant() {
-  //const router = useRouter();
-
   const [errorMessage, setErrorMessage] = useState('');
   const [restaurant, setRestaurant] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleAddRestaurant = async (name: string, address: string) => {
+  const handleAddRestaurant = async (
+    mainImage: any,
+    images: any,
+    name: string,
+    address: string,
+    adminRating: string,
+  ) => {
     try {
       setLoading(true);
-      const res = await addNewRestaurantController(name, address);
+      const res = await addNewRestaurantController(mainImage, images, name, address, adminRating);
 
       if (res.data.success == true) {
         setErrorMessage('');
@@ -42,15 +46,58 @@ function addNewRestaurant() {
     <Layout title="Add Restaurant">
       <Auth title="Add Restaurant" subTitle="Add a restaurant here Bossmen">
         <Formik
-          initialValues={{ name: '', address: '' }}
+          initialValues={{ mainFile: '', file: [], name: '', address: '', adminRating: '' }}
           onSubmit={async (values) => {
-            handleAddRestaurant(values.name, values.address);
+            handleAddRestaurant(values.mainFile, values.file, values.name, values.address, values.adminRating);
           }}
         >
           {(props) => {
-            const { values, handleChange, handleBlur, handleSubmit } = props;
+            const { values, handleChange, handleBlur, handleSubmit, setFieldValue } = props;
             return (
               <form onSubmit={handleSubmit}>
+                <div>
+                  <span>Main Image(Required): </span>
+                  <input
+                    id="mainFile"
+                    accept="image/*"
+                    name="mainFile"
+                    type="file"
+                    multiple={false}
+                    onChange={async (event) => {
+                      try {
+                        const imageFile = await resizeFile(
+                          event.currentTarget.files ? event.currentTarget.files[0] : '',
+                        );
+                        setFieldValue('mainFile', imageFile);
+                      } catch (error) {
+                        console.log('Error resizing image: ', error.message);
+                      }
+                    }}
+                    className="form-control"
+                    required={true}
+                  />
+                </div>
+                <div>
+                  <span>Additional Images: </span>
+                  <input
+                    id="file"
+                    name="file"
+                    type="file"
+                    accept="image/*"
+                    multiple={true}
+                    onChange={async (event) => {
+                      try {
+                        let fileList = event.target.files ? event.target.files : [];
+                        const imageFiles = await resizeFiles(fileList);
+                        setFieldValue('file', imageFiles);
+                      } catch (error) {
+                        console.log('Error in resizing image: ', error.message);
+                      }
+                    }}
+                    className="form-control"
+                    required={false}
+                  />
+                </div>
                 <InputGroup fullWidth>
                   <input
                     id="name"
@@ -67,6 +114,16 @@ function addNewRestaurant() {
                     type="address"
                     placeholder="Address of the Restaurant"
                     value={values.address}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </InputGroup>
+                <InputGroup fullWidth>
+                  <input
+                    id="adminRating"
+                    type="adminRating"
+                    placeholder="AdminRating of the Restaurant"
+                    value={values.adminRating}
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
