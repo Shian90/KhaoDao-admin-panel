@@ -39,8 +39,12 @@ const Home = () => {
   if (checkToken() == true) {
     return (
       <Layout title="Home">
-        <header style={{ textAlign: 'center' }}>
-          Welcome to DeliverBae Admin. Please Check the admin section in the sidebar.{' '}
+        <header
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          <b>Welcome to KhaoDao Admin. Please Check the admin section in the sidebar. </b>
         </header>
       </Layout>
     );

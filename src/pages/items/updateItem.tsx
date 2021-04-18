@@ -387,7 +387,10 @@ function updateItem() {
                               if (itemOption.value == props.values.item.value) {
                                 props.values.mainImage = itemOption.mainImage;
                                 document.getElementById('mainFile')?.setAttribute('required', 'true');
-                                document.getElementById('mainImageLabel')?.innerText ? 'Main Image(Required): ' : null;
+                                const app = document.getElementById('mainImageLabel');
+                                const span = document.createElement('span');
+                                span.textContent = 'Main Image(Required): ';
+                                app?.replaceWith(span);
                               }
                             });
                           }
