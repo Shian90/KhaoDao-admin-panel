@@ -115,7 +115,7 @@ const Header: React.FC<HeaderProps> = (props) => {
             {
               content: (
                 <Link href="/">
-                  <a className="logo">DeliverBae</a>
+                  <a className="logo">KhaoDao</a>
                 </Link>
               ),
             },
@@ -153,7 +153,7 @@ const Header: React.FC<HeaderProps> = (props) => {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <span className="github">DeliverBae Admin Panel</span>
+                  <span className="github">KhaoDao Admin Panel</span>
                   {/* <img src={`https://badgen.net/github/stars/paljs/nextjs-admin-template`} /> */}
                 </a>
               ),
