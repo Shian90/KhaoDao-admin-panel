@@ -4,12 +4,14 @@ import axios from '../../../axios/axios';
 export const updateRestaurantController = async (
   name: string,
   address: string,
+  area: string,
   id: string,
   adminRating: string,
   mainImage: any,
   images: any,
   updatedMainImage: any,
   updatedImages: any,
+  offers: any,
 ) => {
   // const config = {
   //   headers: {
@@ -29,9 +31,11 @@ export const updateRestaurantController = async (
   const reqBody = {
     name: name,
     address: address,
+    area: area,
     adminRating: adminRating,
     images: images,
     mainImage: mainImage,
+    offers: offers,
   };
 
   const formData = new FormData();

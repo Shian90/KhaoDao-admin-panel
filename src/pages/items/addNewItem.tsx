@@ -14,6 +14,7 @@ import { Restaurant } from 'Models/Restaurant';
 import { Menu } from 'Models/Menu';
 import { addNewItemController } from 'controllers/itemController/addNewItemController';
 import { resizeFile, resizeFiles } from 'utils/resize';
+import { getAllCategoriesController } from 'controllers/itemController/getAllCategoriesController';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -47,15 +48,20 @@ function addNewItem() {
   //const router = useRouter();
   const restaurantoptions = new Array();
   const menuoptions = new Array();
+  const categoryoptions = new Array();
   const [errorMessage, setErrorMessage] = useState('');
   const [item, setItem] = useState('');
   const [loading, setLoading] = useState(false);
   const [restaurantOptions, setRestaurantOptions] = useState(restaurantoptions);
   const [menuOptions, setMenuOptions] = useState(menuoptions);
+  const [categoryOptions, setCategoryOptions] = useState(categoryoptions);
 
   useEffect(() => {
+    setLoading(true);
+
     getAllRestaurantsController()
       .then((res) => {
+        setLoading(false);
         if (res.data.success == true) {
           res.data.restaurants.map((restaurant: Restaurant) => {
             setRestaurantOptions((restaurantOptions) => [
@@ -79,12 +85,37 @@ function addNewItem() {
           });
         } else {
           setLoading(false);
+          setErrorMessage(res.data.errMessage);
         }
       })
       .catch((err) => {
         setLoading(false);
         console.log('Error: ', err);
-        //setError(`Internal Server Error.`);
+        //setErrorMessage(`Internal Server Error.`);
+      });
+
+    getAllCategoriesController()
+      .then((res) => {
+        setLoading(false);
+        if (res.data.success == true) {
+          res.data.categories.map((categoryName: string) => {
+            setCategoryOptions((categoryOption) => [
+              ...categoryOption,
+              {
+                value: categoryName,
+                label: categoryName,
+              },
+            ]);
+          });
+        } else {
+          setLoading(false);
+          setErrorMessage(res.data.errMessage);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log('Error: ', err);
+        //setErrorMessage(`Internal Server Error.`);
       });
     return () => {};
   }, []);
@@ -95,11 +126,15 @@ function addNewItem() {
     price: string,
     description: string,
     sellerId: string,
-    category: string,
+    categories: any,
     mainImage: any,
     images: any,
     adminRating: string,
   ) => {
+    categories = categories.map((categoryObject: any) => {
+      return categoryObject.label;
+    });
+
     try {
       setLoading(true);
       const res = await addNewItemController(
@@ -108,7 +143,7 @@ function addNewItem() {
         price,
         description,
         sellerId,
-        category,
+        categories,
         mainImage,
         images,
         adminRating,
@@ -141,7 +176,7 @@ function addNewItem() {
             description: '',
             seller: new SelectRestaurantItem('', 'Select a restaurant', ''),
             menu: new SelectMenuItem('', 'Select a menu', ''),
-            category: '',
+            categories: [],
             file: [],
             mainFile: '',
             adminRating: '',
@@ -153,7 +188,7 @@ function addNewItem() {
               values.price,
               values.description,
               values.seller.value,
-              values.category,
+              values.categories,
               values.mainFile,
               values.file,
               values.adminRating,
@@ -190,7 +225,7 @@ function addNewItem() {
                   id="menu"
                 />
                 <div>
-                  <span>Main Image(Required): </span>
+                  <span>Main Image: </span>
                   <input
                     id="mainFile"
                     name="mainFile"
@@ -208,7 +243,7 @@ function addNewItem() {
                       }
                     }}
                     className="form-control"
-                    required={true}
+                    required={false}
                   />
                 </div>
                 <div>
@@ -252,7 +287,21 @@ function addNewItem() {
                     onBlur={handleBlur}
                   />
                 </InputGroup>
-                <InputGroup fullWidth>
+                <SelectStyled
+                  options={categoryOptions} //<option value="" label="Select a color" />
+                  placeholder="Select categories"
+                  value={values.categories}
+                  onChange={(e: any) => {
+                    console.log('Event: ', e);
+                    setFieldValue('categories', e);
+                  }}
+                  onBlur={handleBlur}
+                  touched={touched.categories}
+                  error={errors.categories}
+                  id="categories"
+                  isMulti
+                />
+                {/* <InputGroup fullWidth>
                   <input
                     id="category"
                     type="category"
@@ -261,7 +310,7 @@ function addNewItem() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                </InputGroup>
+                </InputGroup> */}
                 <InputGroup fullWidth>
                   <input
                     id="description"

@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import { Restaurant } from 'Models/Restaurant';
 import style from '../../css/admin.module.css';
 import { resizeFile, resizeFiles } from 'utils/resize';
+import { getAllAreasController } from 'controllers/restaurantController/getAllAreasController';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -26,28 +27,55 @@ class SelectItem {
   adminRating: number;
   mainImage: any;
   images: any;
+  area: string;
+  offers: any;
 
-  constructor(v: string, l: string, a: string, adminRating: number, mainImage: any, images: any) {
+  constructor(
+    v: string,
+    l: string,
+    a: string,
+    adminRating: number,
+    mainImage: any,
+    images: any,
+    area: string,
+    offers: any,
+  ) {
     this.value = v;
     this.label = l;
     this.address = a;
     this.adminRating = adminRating;
     this.mainImage = mainImage;
     this.images = images;
+    this.area = area;
+    this.offers = offers;
+  }
+}
+
+class SelectArea {
+  value: string;
+  label: string;
+
+  constructor(areaName: string) {
+    this.label = areaName;
+    this.value = areaName;
   }
 }
 
 function updateRestaurant() {
   //const router = useRouter();
   const options = new Array();
+  const areaoptions = new Array();
   const [errorMessage, setErrorMessage] = useState('');
   const [restaurant, setRestaurant] = useState([]);
   const [loading, setLoading] = useState(false);
   const [option, setOption] = useState(options);
+  const [areaOptions, setAreaOptions] = useState(areaoptions);
 
   useEffect(() => {
+    setLoading(true);
     getAllRestaurantsController()
       .then((res) => {
+        setLoading(false);
         if (res.data.success == true) {
           res.data.restaurants.map((v: Restaurant) => {
             setOption((option) => [
@@ -55,10 +83,12 @@ function updateRestaurant() {
               {
                 value: v._id,
                 label: v.name,
+                area: v.area,
                 address: v.address,
                 adminRating: v.adminRating,
                 mainImage: v.mainImage,
                 images: v.images,
+                offers: v.offers,
               },
             ]);
           });
@@ -71,18 +101,44 @@ function updateRestaurant() {
         console.log('Error: ', err);
         setLoading(false);
       });
+
+    getAllAreasController()
+      .then((res) => {
+        setLoading(false);
+        if (res.data.success == true) {
+          res.data.areas.map((areaName: string) => {
+            setAreaOptions((categoryOption) => [
+              ...categoryOption,
+              {
+                value: areaName,
+                label: areaName,
+              },
+            ]);
+          });
+        } else {
+          setLoading(false);
+          setErrorMessage(res.data.errMessage);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log('Error: ', err);
+        //setErrorMessage(`Internal Server Error.`);
+      });
     return () => {};
   }, []);
 
-  const handleAddRestaurant = async (
+  const handleUpdateRestaurant = async (
     name: string,
     address: string,
+    area: string,
     id: string,
     adminRating: string,
     mainImage: any,
     images: any,
     updatedMainImage: any,
     updatedImages: any,
+    offers: any,
   ) => {
     try {
       await option.forEach((option) => {
@@ -95,12 +151,14 @@ function updateRestaurant() {
       const res = await updateRestaurantController(
         name,
         address,
+        area,
         id,
         adminRating,
         mainImage,
         images,
         updatedMainImage,
         updatedImages,
+        offers,
       );
 
       if (res.data.success == true) {
@@ -114,6 +172,8 @@ function updateRestaurant() {
             option.adminRating = res.data.restaurant.adminRating;
             option.mainImage = res.data.restaurant.mainImage;
             option.images = res.data.restaurant.images;
+            option.area = res.data.restaurant.area;
+            option.offers = res.data.restaurant.offers;
           }
           modifiedOptions.push(option);
         });
@@ -180,6 +240,54 @@ function updateRestaurant() {
     return true;
   };
 
+  const handleDeleteOffer = (e: any, restaurantId: string) => {
+    e.preventDefault();
+    let modifiedOptions = new Array();
+
+    console.log('restaurantId: ', restaurantId);
+    console.log('Value: ', Number.parseInt(e.target.value));
+    console.log('Options: ', option);
+
+    option.forEach((restaurantOption) => {
+      if (restaurantOption.value == restaurantId) {
+        console.log('Offers before filering: ', restaurantOption.offers);
+        restaurantOption.offers = restaurantOption.offers.filter((offer: any, index: number) => {
+          console.log(offer);
+          console.log('Fileter index: ', index);
+          return index !== Number.parseInt(e.target.value);
+        });
+        console.log('Offers after filering: ', restaurantOption.offers);
+      }
+      modifiedOptions.push(restaurantOption);
+    });
+
+    console.log('modifiedOptions: ', modifiedOptions);
+    setOption(modifiedOptions);
+
+    return true;
+  };
+
+  const handleAddOffer = (offer: string, restaurantId: string) => {
+    let modifiedOptions = new Array();
+
+    console.log('restaurantId: ', restaurantId);
+    console.log('Options: ', option);
+
+    option.forEach((restaurantOption) => {
+      if (restaurantOption.value == restaurantId) {
+        console.log('Offers before adding: ', restaurantOption.offers);
+        restaurantOption.offers.push(offer);
+        console.log('Offers after adding: ', restaurantOption.offers);
+      }
+      modifiedOptions.push(restaurantOption);
+    });
+
+    console.log('modifiedOptions: ', modifiedOptions);
+    setOption(modifiedOptions);
+
+    return true;
+  };
+
   return (
     <Layout title="Update Restaurant">
       <Auth title="Update Restaurant" subTitle="Update a restaurant here Bossmen">
@@ -187,23 +295,28 @@ function updateRestaurant() {
           initialValues={{
             name: '',
             address: '',
-            id: new SelectItem('', 'Select a restaurant', '', 0, '', []),
+            area: new SelectArea(''),
+            id: new SelectItem('', 'Select a restaurant', '', 0, '', [], '', []),
             adminRating: '',
             mainImage: '',
             images: [],
+            offer: '',
+            offers: [],
             updatedMainImage: undefined,
             updatedImages: undefined,
           }}
           onSubmit={async (values) => {
-            handleAddRestaurant(
+            handleUpdateRestaurant(
               values.name,
               values.address,
+              values.area.value,
               values.id.value,
               values.adminRating,
               values.mainImage,
               values.images,
               values.updatedMainImage,
               values.updatedImages,
+              values.offers,
             );
           }}
         >
@@ -223,6 +336,8 @@ function updateRestaurant() {
                     setFieldValue('adminRating', value.adminRating);
                     setFieldValue('mainImage', value.mainImage);
                     setFieldValue('images', value.images);
+                    setFieldValue('area', { label: value.area });
+                    setFieldValue('offers', value.offers);
                   }}
                   onBlur={handleBlur}
                   touched={touched.id}
@@ -263,11 +378,11 @@ function updateRestaurant() {
                             option.forEach((restaurantOption) => {
                               if (restaurantOption.value == props.values.id.value) {
                                 props.values.mainImage = restaurantOption.mainImage;
-                                document.getElementById('mainFile')?.setAttribute('required', 'true');
-                                const app = document.getElementById('mainImageLabel');
-                                const span = document.createElement('span');
-                                span.textContent = 'Main Image(Required): ';
-                                app?.replaceWith(span);
+                                // document.getElementById('mainFile')?.setAttribute('required', 'true');
+                                // const app = document.getElementById('mainImageLabel');
+                                // const span = document.createElement('span');
+                                // span.textContent = 'Main Image(Required): ';
+                                // app?.replaceWith(span);
                               }
                             });
                           }
@@ -340,6 +455,18 @@ function updateRestaurant() {
                     onBlur={handleBlur}
                   />
                 </InputGroup>
+                <SelectStyled
+                  options={areaOptions} //<option value="" label="" />
+                  placeholder="Select an area"
+                  value={values.area}
+                  onChange={(area: SelectArea) => {
+                    setFieldValue('area', area);
+                  }}
+                  onBlur={handleBlur}
+                  touched={touched.area}
+                  error={errors.area}
+                  id="area"
+                />
                 <InputGroup fullWidth>
                   <input
                     id="address"
@@ -361,6 +488,60 @@ function updateRestaurant() {
                   />
                 </InputGroup>
 
+                <InputGroup fullWidth>
+                  <input
+                    id="offer"
+                    type="offer"
+                    placeholder="Offers from the Restaurant"
+                    value={values.offer}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+
+                  <button
+                    onClick={(event) => {
+                      event.preventDefault();
+                      if (props.values.offer !== '') handleAddOffer(props.values.offer, props.values.id.value);
+                    }}
+                  >
+                    Add
+                  </button>
+                </InputGroup>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ marginBottom: -30 }}>Offers: </span>
+                  {props.values.offers !== []
+                    ? props.values.offers.map((offer, index) => (
+                        <div>
+                          <span key={index}>{`${index + 1}: ${offer} `}</span>{' '}
+                          <button
+                            value={index}
+                            className={style.formOfferDeleteBtn}
+                            onClick={(e) => {
+                              console.log('Clicked: ');
+                              if (handleDeleteOffer(e, props.values.id.value)) {
+                                option.forEach((restaurantOption) => {
+                                  if (restaurantOption.value == props.values.id.value) {
+                                    props.values.offers = restaurantOption.offers;
+                                  }
+                                });
+                              }
+                            }}
+                          >
+                            {' '}
+                            Delete{' '}
+                          </button>
+                        </div>
+                      ))
+                    : null}
+                </div>
+
+                {/* <div>
+                  <span style={{ display: 'flex', flexDirection: 'column', marginTop: 65 }}>Newly added offers: </span>
+                  {offersArrayState.map((offer: any, index: number) => (
+                    <span style={{ display: 'flex', flexDirection: 'column' }}>{`${index + 1}: ${offer} `}</span>
+                  ))}
+                </div> */}
+
                 <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
                   Update Restaurant
                 </Button>
@@ -369,7 +550,9 @@ function updateRestaurant() {
           }}
         </Formik>
         <div style={{ color: 'red' }}>{errorMessage}</div>
-        {restaurant ? <div style={{ color: 'green', margin: 10 }}>{`Successfully Updated ${restaurant}`}</div> : null}
+        {restaurant && !loading ? (
+          <div style={{ color: 'green', margin: 10 }}>{`Successfully Updated ${restaurant}`}</div>
+        ) : null}
       </Auth>
     </Layout>
   );

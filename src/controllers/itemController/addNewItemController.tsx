@@ -7,7 +7,7 @@ export const addNewItemController = async (
   price: string,
   description: string,
   sellerId: string,
-  category: string,
+  categories: any,
   mainImage: any,
   images: any,
   adminRating: string,
@@ -32,7 +32,7 @@ export const addNewItemController = async (
     description: description,
     menu: menuId,
     seller: sellerId,
-    category: category,
+    categories: categories,
     mainImage: '',
     images: [],
     adminRating: adminRating,
@@ -48,6 +48,8 @@ export const addNewItemController = async (
   // console.log('Item: ', formData.get('item'));
   // console.log('MainImage: ', formData.get('mainImage'));
   console.log('Images: ', formData.get('assets'));
+  console.log('mainImage: ', formData.get('mainImage'));
+  console.log('item: ', formData.get('item'));
 
   try {
     const res = await axios.post('/admin/items/new', formData, configFormData);

@@ -12,7 +12,7 @@ export interface Item {
   _id: string;
   name: string;
   seller: Restaurant;
-  category: string;
+  categories: any;
   totalRating: number;
   adminRating: number;
   reviews: any[];
