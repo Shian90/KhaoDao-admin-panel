@@ -16,6 +16,7 @@ import { Item } from 'Models/Item';
 import { updateItemController } from 'controllers/itemController/updateItemController';
 import style from '../../css/admin.module.css';
 import { resizeFile, resizeFiles } from 'utils/resize';
+import { getAllCategoriesController } from 'controllers/itemController/getAllCategoriesController';
 
 export const SelectStyled = styled(Select)`
   margin-bottom: 1rem;
@@ -47,7 +48,7 @@ class SelectMenuItem {
 class SelectItem {
   value: string;
   label: string;
-  category: string;
+  categories: any;
   description: string;
   restaurantId: string;
   menuId: string;
@@ -61,7 +62,7 @@ class SelectItem {
     itemName: string,
     restaurantId: string,
     menuId: string,
-    category: string,
+    categories: any,
     description: string,
     price: number,
     images: any,
@@ -72,7 +73,7 @@ class SelectItem {
     this.value = itemId;
     this.restaurantId = restaurantId;
     this.menuId = menuId;
-    this.category = category;
+    this.categories = categories;
     this.description = description;
     this.price = price;
     this.images = images;
@@ -86,16 +87,21 @@ function updateItem() {
   const restaurantoptions = new Array();
   const menuoptions = new Array();
   const itemoptions = new Array();
+  const categoryoptions = new Array();
   const [errorMessage, setErrorMessage] = useState('');
   const [item, setItem] = useState('');
   const [loading, setLoading] = useState(false);
   const [restaurantOptions, setRestaurantOptions] = useState(restaurantoptions);
   const [menuOptions, setMenuOptions] = useState(menuoptions);
   const [itemOptions, setItemOptions] = useState(itemoptions);
+  const [categoryOptions, setCategoryOptions] = useState(categoryoptions);
 
   useEffect(() => {
+    setLoading(true);
+
     getAllRestaurantsController()
       .then((res) => {
+        setLoading(false);
         if (res.data.success == true) {
           res.data.restaurants.map((restaurant: Restaurant) => {
             setRestaurantOptions((restaurantOptions) => [
@@ -121,7 +127,7 @@ function updateItem() {
                   {
                     label: item.name,
                     value: item._id,
-                    category: item.category,
+                    categories: item.categories,
                     description: item.description,
                     restaurantId: restaurant._id,
                     menuId: menu._id,
@@ -136,12 +142,37 @@ function updateItem() {
           });
         } else {
           setLoading(false);
+          setErrorMessage(res.data.errMessage);
         }
       })
       .catch((err) => {
-        console.log('Error: ', err);
         setLoading(false);
+        console.log('Error: ', err);
         // setError(`Internal Server Error.`);
+      });
+
+    getAllCategoriesController()
+      .then((res) => {
+        setLoading(false);
+        if (res.data.success == true) {
+          res.data.categories.map((categoryName: string) => {
+            setCategoryOptions((categoryOption) => [
+              ...categoryOption,
+              {
+                value: categoryName,
+                label: categoryName,
+              },
+            ]);
+          });
+        } else {
+          setLoading(false);
+          setErrorMessage(res.data.errMessage);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log('Error: ', err);
+        //setErrorMessage(`Internal Server Error.`);
       });
     return () => {};
   }, []);
@@ -152,7 +183,7 @@ function updateItem() {
     price: string,
     description: string,
     sellerId: string,
-    category: string,
+    categories: any,
     itemId: string,
     images: any,
     adminRating: string,
@@ -160,6 +191,10 @@ function updateItem() {
     updatedMainImage: any,
     updatedImages: any,
   ) => {
+    categories = categories.map((categoryObject: any) => {
+      return categoryObject.label;
+    });
+    console.log('Categories: ', categories);
     try {
       await itemOptions.forEach((itemOption) => {
         if (itemOption.value == itemId) {
@@ -175,7 +210,7 @@ function updateItem() {
         price,
         description,
         sellerId,
-        category,
+        categories,
         itemId,
         images,
         adminRating,
@@ -275,8 +310,8 @@ function updateItem() {
             description: '',
             seller: new SelectRestaurantItem('', 'Select a restaurant', ''),
             menu: new SelectMenuItem('', 'Select a menu', ''),
-            item: new SelectItem('', 'Select an item', '', '', '', '', 0, [], 0, ''),
-            category: '',
+            item: new SelectItem('', 'Select an item', '', '', [], '', 0, [], 0, ''),
+            categories: [],
             images: [],
             mainImage: '',
             updatedImages: undefined,
@@ -290,7 +325,7 @@ function updateItem() {
               values.price,
               values.description,
               values.seller.value,
-              values.category,
+              values.categories,
               values.item.value,
               values.images,
               values.adminRating,
@@ -340,7 +375,13 @@ function updateItem() {
                   onChange={(item: SelectItem) => {
                     setFieldValue('item', item);
                     setFieldValue('name', item.label);
-                    setFieldValue('category', item.category);
+                    if (item.categories.length > 0) {
+                      let categoriesArray: any = [];
+                      item.categories.map((categoryName: any) => {
+                        categoriesArray.push({ value: categoryName, label: categoryName });
+                        setFieldValue('categories', categoriesArray);
+                      });
+                    }
                     setFieldValue('description', item.description);
                     setFieldValue('price', item.price);
                     setFieldValue('images', item.images);
@@ -386,11 +427,11 @@ function updateItem() {
                             itemOptions.forEach((itemOption) => {
                               if (itemOption.value == props.values.item.value) {
                                 props.values.mainImage = itemOption.mainImage;
-                                document.getElementById('mainFile')?.setAttribute('required', 'true');
-                                const app = document.getElementById('mainImageLabel');
-                                const span = document.createElement('span');
-                                span.textContent = 'Main Image(Required): ';
-                                app?.replaceWith(span);
+                                // document.getElementById('mainFile')?.setAttribute('required', 'true');
+                                // const app = document.getElementById('mainImageLabel');
+                                // const span = document.createElement('span');
+                                // span.textContent = 'Main Image(Required): ';
+                                // app?.replaceWith(span);
                               }
                             });
                           }
@@ -471,7 +512,21 @@ function updateItem() {
                     onBlur={handleBlur}
                   />
                 </InputGroup>
-                <InputGroup fullWidth>
+                <SelectStyled
+                  options={categoryOptions} //<option value="" label="Select a color" />
+                  placeholder="Select categories"
+                  value={values.categories}
+                  onChange={(e: any) => {
+                    console.log('Event: ', e);
+                    setFieldValue('categories', e);
+                  }}
+                  onBlur={handleBlur}
+                  touched={touched.categories}
+                  error={errors.categories}
+                  id="categories"
+                  isMulti
+                />
+                {/* <InputGroup fullWidth>
                   <input
                     id="category"
                     type="category"
@@ -480,7 +535,7 @@ function updateItem() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                </InputGroup>
+                </InputGroup> */}
                 <InputGroup fullWidth>
                   <input
                     id="description"
@@ -511,7 +566,7 @@ function updateItem() {
           }}
         </Formik>
         <div style={{ color: 'red' }}>{errorMessage}</div>
-        {item ? <div style={{ color: 'green', margin: 10 }}>{`Successfully Updated ${item}`}</div> : null}
+        {item && !loading ? <div style={{ color: 'green', margin: 10 }}>{`Successfully Updated ${item}`}</div> : null}
       </Auth>
     </Layout>
   );

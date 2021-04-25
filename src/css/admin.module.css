@@ -86,3 +86,14 @@
   margin-top: 10px;
   object-fit: contain;
 }
+
+.formOfferDeleteBtn {
+  background-color: crimson;
+  color: aliceblue;
+  width: 60px;
+  margin-top: 50px;
+}
+
+.marginBottomOffers {
+  margin-bottom: -35px;
+}

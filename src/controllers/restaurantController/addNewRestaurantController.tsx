@@ -5,8 +5,10 @@ export const addNewRestaurantController = async (
   mainImage: any,
   images: any,
   name: string,
+  area: string,
   address: string,
   adminRating: string,
+  offers: any,
 ) => {
   const configFormData = {
     headers: {
@@ -20,8 +22,10 @@ export const addNewRestaurantController = async (
     mainImage: '',
     images: [],
     name: name,
+    area: area,
     address: address,
     adminRating: adminRating,
+    offers: offers,
   };
 
   const formData = new FormData();
@@ -30,7 +34,9 @@ export const addNewRestaurantController = async (
   for (let i = 0; i < images.length; i++) {
     formData.append('assets', images[i]);
   }
-
+  console.log('Images: ', formData.get('assets'));
+  console.log('mainImage: ', formData.get('mainImage'));
+  console.log('restaurant: ', formData.get('restaurant'));
   try {
     const res = await axios.post('/admin/restaurant/new', formData, configFormData);
     return res;

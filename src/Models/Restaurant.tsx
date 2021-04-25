@@ -12,6 +12,8 @@ export interface Restaurant {
   _id: string;
   name: string;
   address: string;
+  area: string;
+  offers: any;
   createdAt: string;
   __v: number;
 }

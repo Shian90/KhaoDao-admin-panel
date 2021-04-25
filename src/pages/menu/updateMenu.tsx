@@ -188,7 +188,7 @@ function updateMenu() {
           }}
         </Formik>
         <div style={{ color: 'red' }}>{errorMessage}</div>
-        {item ? <div style={{ color: 'green', margin: 10 }}>{`Successfully Updated ${item}`}</div> : null}
+        {item && !loading ? <div style={{ color: 'green', margin: 10 }}>{`Successfully Updated ${item}`}</div> : null}
       </Auth>
     </Layout>
   );
